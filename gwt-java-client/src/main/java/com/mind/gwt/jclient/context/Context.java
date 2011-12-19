@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.mind.gwt.jclient;
+package com.mind.gwt.jclient.context;
 
 import java.util.Collections;
 import java.util.Set;
@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 import org.jboss.netty.handler.codec.http.Cookie;
 
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
-import com.mind.gwt.jclient.core.ExecutorServiceFactory;
+import com.mind.gwt.jclient.GwtJavaClient;
+import com.mind.gwt.jclient.GwtJavaClientListener;
 
-// TODO move to `core` package... 
 public class Context
 {
     private static final ThreadLocal<Context> currentContext = new ThreadLocal<Context>();

@@ -42,9 +42,9 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.UrlBuilder;
-import com.mind.gwt.jclient.Context;
 import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.GwtJavaClientListener;
+import com.mind.gwt.jclient.context.Context;
 
 /**
  * This class should provides access to the browser window's methods, properties, and events.

@@ -34,7 +34,7 @@ package com.google.gwt.user.client;
 
 import java.util.concurrent.ScheduledFuture;
 
-import com.mind.gwt.jclient.Context;
+import com.mind.gwt.jclient.context.Context;
 
 /**
  * A simplified, browser-safe timer class. This class serves the same purpose as

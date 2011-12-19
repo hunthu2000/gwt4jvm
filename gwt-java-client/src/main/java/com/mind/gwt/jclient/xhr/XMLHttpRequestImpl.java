@@ -38,7 +38,7 @@ import org.jboss.netty.handler.codec.http.HttpVersion;
 
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
-import com.mind.gwt.jclient.Context;
+import com.mind.gwt.jclient.context.Context;
 import com.mind.gwt.jclient.xhr.ChannelService.ChannelMessageHandler;
 
 public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessageHandler

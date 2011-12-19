@@ -18,7 +18,7 @@ package com.mind.gwt.jclient.metrics;
 import java.lang.reflect.Method;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.gwt.jclient.Context;
+import com.mind.gwt.jclient.context.Context;
 
 public class MeasurableAsyncCallback<T> implements AsyncCallback<T>
 {

@@ -13,13 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.mind.gwt.jclient.core;
+package com.mind.gwt.jclient.context;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class ExecutorServiceFactory
+class ExecutorServiceFactory
 {
     private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
     private static final ExecutorService[] executors = new ExecutorService[Runtime.getRuntime().availableProcessors() * 2];
