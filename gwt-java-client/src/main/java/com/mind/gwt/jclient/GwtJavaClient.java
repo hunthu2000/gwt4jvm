@@ -26,7 +26,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.mind.gwt.jclient.metrics.Metrics;
 
 public abstract class GwtJavaClient implements Runnable
@@ -37,6 +39,7 @@ public abstract class GwtJavaClient implements Runnable
     private final AtomicLong duration = new AtomicLong(-1);
     private final AtomicBoolean succeed = new AtomicBoolean();
     private final CountDownLatch completeLatch = new CountDownLatch(1);
+    private final AtomicReference<Throwable> uncaughtException = new AtomicReference<Throwable>(); 
 
     public void start()
     {
@@ -44,7 +47,17 @@ public abstract class GwtJavaClient implements Runnable
         {
             throw new IllegalStateException(getClass().getSimpleName() + " has been already started!");
         }
-        new Context(this).execute(this);
+        Context context = new Context(this, new UncaughtExceptionHandler()
+        {
+            @Override
+            public void onUncaughtException(Throwable exception)
+            {
+                uncaughtException.set(exception);
+                finish(false);
+            }
+
+        });
+        context.execute(this);
     }
 
     public void await() throws InterruptedException
@@ -85,6 +98,11 @@ public abstract class GwtJavaClient implements Runnable
     public boolean isSucceed()
     {
         return succeed.get();
+    }
+
+    public Throwable getUncaughtException()
+    {
+        return uncaughtException.get();
     }
 
     public void addMetrics(Metrics metrics)

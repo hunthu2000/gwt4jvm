@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jboss.netty.handler.codec.http.Cookie;
 
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.mind.gwt.jclient.core.ExecutorServiceFactory;
 
 // TODO move to `core` package... 
@@ -34,14 +35,16 @@ public class Context
     private static final ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
 
     private final GwtJavaClient client;
+    private final UncaughtExceptionHandler uncaughtExceptionHandler;
     private final ExecutorService executorService = ExecutorServiceFactory.getExecutorService(this);
     private final ScheduledExecutorService scheduledExecutorService = ExecutorServiceFactory.getScheduledExecutorService();
     private final Set<Cookie> cookies = new CopyOnWriteArraySet<Cookie>();
     private final Set<ScheduledFuture<?>> scheduledFutures = Collections.newSetFromMap(new ConcurrentHashMap<ScheduledFuture<?>, Boolean>());
 
-    public Context(GwtJavaClient client)
+    public Context(GwtJavaClient client, UncaughtExceptionHandler uncaughtExceptionHandler)
     {
         this.client = client;
+        this.uncaughtExceptionHandler = uncaughtExceptionHandler;
         client.addListener(new GwtJavaClientListener()
         {
             @Override
@@ -126,12 +129,12 @@ public class Context
     {
         this.cookies.addAll(cookies);
     }
-    
+
     public Set<Cookie> getCookies()
     {
         return Collections.unmodifiableSet(cookies);
     }
-    
+
     private synchronized void runInContext(Runnable runnable)
     {
         currentContext.set(this);
@@ -141,9 +144,7 @@ public class Context
         }
         catch (Throwable exception)
         {
-            exception.printStackTrace();
-            client.failure();
-//            throw new RuntimeException(exception); // TODO...
+            uncaughtExceptionHandler.onUncaughtException(exception);
         }
     }
 

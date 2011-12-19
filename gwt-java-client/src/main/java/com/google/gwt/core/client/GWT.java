@@ -44,6 +44,21 @@ import com.mind.gwt.jclient.DeferredBindingFactory;
 public final class GWT
 {
     /**
+     * This interface is used to catch exceptions at the "top level" just before
+     * they escape to the browser. This is used in places where the browser calls
+     * into user code such as event callbacks, timers, and RPC.
+     *
+     * In Development Mode, the default handler prints a stack trace to the log
+     * window. In Production Mode, the default handler is null and thus exceptions
+     * are allowed to escape, which provides an opportunity to use a JavaScript
+     * debugger.
+    */
+    public interface UncaughtExceptionHandler
+    {
+        void onUncaughtException(Throwable exception);
+    }
+
+    /**
      * This constant is used by {@link #getPermutationStrongName} when running in Development Mode.
     */
     private static final String HOSTED_MODE_PERMUTATION_STRONG_NAME = "HostedMode";
