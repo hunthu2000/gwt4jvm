@@ -57,7 +57,7 @@ public class ReflectionHelper
     {
         if (c.getName().endsWith("_FieldSerializer") && !c.getName().startsWith("com.google.gwt.user.client.rpc.core.java"))
         {
-            Class<?> classToCreate = Class.forName(c.getName().replaceFirst("_FieldSerializer$", ""));
+            Class<?> classToCreate = Class.forName(fieldSerializerToClass(c.getName()));
             if (!classToCreate.isEnum())
             {
                 return (T) new Reflective_FieldSerializer(classToCreate);
@@ -66,6 +66,20 @@ public class ReflectionHelper
         Constructor<T> constructor = c.getDeclaredConstructor();
         constructor.setAccessible(true);
         return constructor.newInstance();
+    }
+
+    /**
+     * Return name of the class whose objects this field serializer is on duty to serialize
+     * or deserialize. GWT's default filed serializers has following naming:    
+     * 
+     *     SomeClass$SomeInnerClass -> SomeClass_SomeInnerClass_FieldSerializer
+     * 
+     * @param fieldSerializer - then name of field serializer.
+     * @return name of the class which this field serializer is responsible for.
+     */
+    private static String fieldSerializerToClass(String fieldSerializer)
+    {
+        return fieldSerializer.replaceFirst("_FieldSerializer$", "").replace("_", "$");
     }
 
 }

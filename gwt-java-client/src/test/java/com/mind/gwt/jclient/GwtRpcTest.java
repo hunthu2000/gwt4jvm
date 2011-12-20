@@ -31,6 +31,7 @@ import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public class GwtRpcTest
@@ -142,6 +143,57 @@ public class GwtRpcTest
                     {
                         failure();
                     }
+                });
+            }
+        };
+        client.start();
+        client.await();
+        Assert.assertTrue(client.isSucceed());
+    }
+
+    @Test
+    public void testWithStaticNestedClassTransmission() throws InterruptedException
+    {
+        GwtJavaClient client = new GwtJavaClient()
+        {
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                service.putWithStaticNestedClass(WithStaticNestedClass.createClientToServerObject(), new AsyncCallback<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void result)
+                    {
+                        service.getWithStaticNestedClass(new AsyncCallback<WithStaticNestedClass>()
+                        {
+                            @Override
+                            public void onSuccess(WithStaticNestedClass result)
+                            {
+                                if (WithStaticNestedClass.createServerToClientObject().equals(result))
+                                {
+                                    success();
+                                }
+                                else
+                                {
+                                    failure();
+                                }
+                            }
+                            
+                            @Override
+                            public void onFailure(Throwable caught)
+                            {
+                                failure();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught)
+                    {
+                        failure();
+                    }
+
                 });
             }
         };

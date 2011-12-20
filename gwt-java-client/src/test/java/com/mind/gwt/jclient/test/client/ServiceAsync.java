@@ -18,6 +18,7 @@ package com.mind.gwt.jclient.test.client;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
 public interface ServiceAsync
 {
@@ -28,5 +29,9 @@ public interface ServiceAsync
     void getMinPrimitives(AsyncCallback<Primitives> callback);
 
     void putMaxPrimitives(Primitives primitives, AsyncCallback<Void> callback);
+
+    void getWithStaticNestedClass(AsyncCallback<WithStaticNestedClass> callback);
+
+    void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass, AsyncCallback<Void> callback);
 
 }

@@ -19,6 +19,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
 @RemoteServiceRelativePath("service")
 public interface Service extends RemoteService
@@ -30,5 +31,9 @@ public interface Service extends RemoteService
     Primitives getMinPrimitives();
 
     void putMaxPrimitives(Primitives primitives);
+
+    WithStaticNestedClass getWithStaticNestedClass();
+
+    void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass);
 
 }
