@@ -25,31 +25,20 @@ import com.mind.gwt.jclient.metrics.MeasurableAsyncCallback;
 public class DeferredBindingFactory
 {
     @SuppressWarnings("unchecked")
-    public <T> T create(final Class<?> c)
+    public <T> T create(final Class<?> c) throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
-        try
+        Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
+        return (T) Proxy.newProxyInstance(asyncServiceClass.getClassLoader(), new Class[] {asyncServiceClass}, new InvocationHandler()
         {
-            Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
-            return (T) Proxy.newProxyInstance(asyncServiceClass.getClassLoader(), new Class[] {asyncServiceClass}, new InvocationHandler()
-            {
-                private final T asyncServiceProxy  = (T) Class.forName(c.getName() + "_Proxy").newInstance();
+            private final T asyncServiceProxy  = (T) Class.forName(c.getName() + "_Proxy").newInstance();
 
-                @Override
-                @SuppressWarnings("rawtypes")
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-                {
-                    args[args.length - 1] = new MeasurableAsyncCallback(method, (AsyncCallback<?>) args[args.length - 1]);
-                    return method.invoke(asyncServiceProxy, args);
-                }
-            });
-        }
-        catch (ClassNotFoundException exception)
-        {
-            throw new UnsupportedOperationException(c + ": class not found", exception);
-        }
-        catch (Exception exception)
-        {
-            throw new UnsupportedOperationException(c + ": class can't be instantenated", exception);
-        }
+            @Override
+            @SuppressWarnings("rawtypes")
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            {
+                args[args.length - 1] = new MeasurableAsyncCallback(method, (AsyncCallback<?>) args[args.length - 1]);
+                return method.invoke(asyncServiceProxy, args);
+            }
+        });
     }
 }

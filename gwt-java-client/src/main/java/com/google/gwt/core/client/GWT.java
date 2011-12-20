@@ -92,9 +92,20 @@ public final class GWT
     @SuppressWarnings("unchecked")
     public static <T> T create(final Class<?> c)
     {
-        return (T) deferredBindingFactory.get().create(c);
+        try
+        {
+            return (T) deferredBindingFactory.get().create(c);
+        }
+        catch (ClassNotFoundException exception)
+        {
+            throw new UnsupportedOperationException(c + ": class not found", exception);
+        }
+        catch (Exception exception)
+        {
+            throw new UnsupportedOperationException(c + ": class can't be instantenated", exception);
+        }
     }
-    
+
     /**
      * Gets the URL prefix of the module which should be prepended to URLs that
      * are intended to be module-relative, such as RPC entry points and files in
