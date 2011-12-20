@@ -72,10 +72,6 @@ public class Context
     
     public void execute(final Runnable runnable)
     {
-        if (client.isFinished())
-        {
-            throw new IllegalStateException("Corresponding GwtJavaClient has been already finished!");
-        }
         executorService.submit(new Runnable()
         {
             @Override
@@ -89,10 +85,6 @@ public class Context
 
     public ScheduledFuture<?> schedule(long delayMs, final Runnable runnable)
     {
-        if (client.isFinished())
-        {
-            throw new IllegalStateException("Corresponding GwtJavaClient has been already finished!");
-        }
         ScheduledFuture<?> feature = scheduledExecutorService.schedule(new Runnable()
         {
             @Override
@@ -108,10 +100,6 @@ public class Context
 
     public ScheduledFuture<?> scheduleRepeating(long periodMs, final Runnable runnable)
     {
-        if (client.isFinished())
-        {
-            throw new IllegalStateException("Corresponding GwtJavaClient has been already finished!");
-        }
         ScheduledFuture<?> feature = scheduledExecutorService.scheduleWithFixedDelay(new Runnable()
         {
             @Override
@@ -140,7 +128,7 @@ public class Context
         currentContext.set(this);
         try
         {
-            runnable.run();
+            if (!client.isFinished()) runnable.run();
         }
         catch (Throwable exception)
         {
