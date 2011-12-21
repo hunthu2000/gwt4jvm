@@ -5,7 +5,6 @@ import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
-import com.mind.gwt.jclient.test.dto.WithStaticNestedClass.StaticNestedClass;
 
 @SuppressWarnings("serial")
 public class ServiceImpl extends RemoteServiceServlet implements Service
