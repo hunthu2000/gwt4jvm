@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.mind.gwt.jclient.context.Context;
 import com.mind.gwt.jclient.metrics.Metrics;
@@ -41,6 +42,12 @@ public abstract class GwtJavaClient implements Runnable
     private final AtomicBoolean succeed = new AtomicBoolean();
     private final CountDownLatch completeLatch = new CountDownLatch(1);
     private final AtomicReference<Throwable> uncaughtException = new AtomicReference<Throwable>(); 
+
+    // TODO Should become an abstract method after removing {@link GWT#getGlobalModuleBaseURL()}.
+    public String getModuleBaseURL()
+    {
+        return GWT.getGlobalModuleBaseURL();
+    }
 
     public void start()
     {

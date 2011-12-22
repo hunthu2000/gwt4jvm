@@ -65,12 +65,16 @@ public final class GWT
     private static final String HOSTED_MODE_PERMUTATION_STRONG_NAME = "HostedMode";
 
     /**
-     * Should be removed within {@link GWT#setDeferredBindingFactory(DeferredBindingFactory deferredBindingFactory)}
+     * @deprecated Should be removed along with {@link GWT#setDeferredBindingFactory(DeferredBindingFactory deferredBindingFactory)}
      */
     @Deprecated
     private static final AtomicReference<DeferredBindingFactory> deferredBindingFactory = new AtomicReference<DeferredBindingFactory>();
 
-    private static final AtomicReference<String> moduleBaseURL = new AtomicReference<String>();
+    /**
+     * @deprecated Should be removed along with {@link GWT#setModuleBaseURL(String moduleBaseURL)}
+    */
+    @Deprecated
+    private static final AtomicReference<String> globalModuleBaseURL = new AtomicReference<String>();
 
     /**
      * @deprecated Override {@link GwtJavaClient#getDeferredBindingFactory()} method instead.
@@ -128,15 +132,28 @@ public final class GWT
     */
     public static String getModuleBaseURL()
     {
-        return moduleBaseURL.get();
+        return Context.getCurrentContext().getClient().getModuleBaseURL();
     }
 
+    /**
+     * @deprecated Override {@link GwtJavaClient#getModuleBaseURL()} method instead.
+    */
+    @Deprecated
     public static void setModuleBaseURL(String moduleBaseURL)
     {
-        if (!GWT.moduleBaseURL.compareAndSet(null, moduleBaseURL))
+        if (!GWT.globalModuleBaseURL.compareAndSet(null, moduleBaseURL))
         {
-            throw new IllegalStateException("Module base URL can be set only once! Current value is `" + GWT.moduleBaseURL.get() + "`");
+            throw new IllegalStateException("Module base URL can be set only once! Current value is `" + GWT.globalModuleBaseURL.get() + "`");
         }
+    }
+
+    /**
+     * @deprecated Should be removed along with {@link GWT#setModuleBaseURL(String moduleBaseURL)}
+    */
+    @Deprecated
+    public static String getGlobalModuleBaseURL()
+    {
+        return GWT.globalModuleBaseURL.get();
     }
 
     /**

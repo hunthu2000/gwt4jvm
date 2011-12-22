@@ -36,6 +36,8 @@ import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public class GwtRpcTest
 {
+    private static final String MODULE_BASE_URL = "http://localhost:8080/test/";
+
     private static Server jetty;
 
     @BeforeClass
@@ -48,8 +50,6 @@ public class GwtRpcTest
         servletContextHandler.addServlet(new ServletHolder(new ServiceImpl()), "/test/service");
         jetty.setHandler(servletContextHandler);
         jetty.start();
-
-        GWT.setModuleBaseURL("http://localhost:8080/test/");
     }
 
     @AfterClass
@@ -64,6 +64,12 @@ public class GwtRpcTest
     {
         GwtJavaClient client = new GwtJavaClient()
         {
+            @Override
+            public String getModuleBaseURL()
+            {
+                return MODULE_BASE_URL;
+            }
+
             @Override
             public void run()
             {
@@ -111,6 +117,12 @@ public class GwtRpcTest
         GwtJavaClient client = new GwtJavaClient()
         {
             @Override
+            public String getModuleBaseURL()
+            {
+                return MODULE_BASE_URL;
+            }
+
+            @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
@@ -156,6 +168,12 @@ public class GwtRpcTest
     {
         GwtJavaClient client = new GwtJavaClient()
         {
+            @Override
+            public String getModuleBaseURL()
+            {
+                return MODULE_BASE_URL;
+            }
+
             @Override
             public void run()
             {
