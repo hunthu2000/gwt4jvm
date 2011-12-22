@@ -24,6 +24,15 @@ import com.mind.gwt.jclient.metrics.MeasurableAsyncCallback;
 
 public class DeferredBindingFactory
 {
+    private static final DeferredBindingFactory DEFERRED_BINDING_FACTORY = new DeferredBindingFactory();
+
+    public static DeferredBindingFactory getDeferredBindingFactory()
+    {
+        return DEFERRED_BINDING_FACTORY; 
+    }
+
+    protected DeferredBindingFactory() {}
+
     @SuppressWarnings("unchecked")
     public <T> T create(final Class<?> c) throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
@@ -41,4 +50,5 @@ public class DeferredBindingFactory
             }
         });
     }
+
 }

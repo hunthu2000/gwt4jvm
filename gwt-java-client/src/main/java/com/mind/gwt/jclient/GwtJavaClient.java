@@ -118,6 +118,11 @@ public abstract class GwtJavaClient implements Runnable
         return Collections.unmodifiableCollection((Collection<T>) metricsMap.get(type));
     }
 
+    public DeferredBindingFactory getDeferredBindingFactory()
+    {
+        return DeferredBindingFactory.getDeferredBindingFactory();
+    }
+
     private void finish(boolean succeed)
     {
         if (!duration.compareAndSet(-1, System.currentTimeMillis() - startTime.get()))

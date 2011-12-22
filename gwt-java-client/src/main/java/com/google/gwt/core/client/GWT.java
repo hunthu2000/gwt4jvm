@@ -35,6 +35,7 @@ package com.google.gwt.core.client;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.mind.gwt.jclient.DeferredBindingFactory;
+import com.mind.gwt.jclient.context.Context;
 
 /**
  * Supports core functionality that in some cases requires direct support from
@@ -63,10 +64,18 @@ public final class GWT
     */
     private static final String HOSTED_MODE_PERMUTATION_STRONG_NAME = "HostedMode";
 
-    private static final AtomicReference<DeferredBindingFactory> deferredBindingFactory = new AtomicReference<DeferredBindingFactory>(new DeferredBindingFactory());
+    /**
+     * Should be removed within {@link GWT#setDeferredBindingFactory(DeferredBindingFactory deferredBindingFactory)}
+     */
+    @Deprecated
+    private static final AtomicReference<DeferredBindingFactory> deferredBindingFactory = new AtomicReference<DeferredBindingFactory>();
 
     private static final AtomicReference<String> moduleBaseURL = new AtomicReference<String>();
 
+    /**
+     * @deprecated Override {@link GwtJavaClient#getDeferredBindingFactory()} method instead.
+    */
+    @Deprecated
     public static void setDeferredBindingFactory(DeferredBindingFactory deferredBindingFactory)
     {
         if (deferredBindingFactory == null)
@@ -94,7 +103,11 @@ public final class GWT
     {
         try
         {
-            return (T) deferredBindingFactory.get().create(c);
+            if (GWT.deferredBindingFactory.get() == null)
+            {
+                return (T) Context.getCurrentContext().getClient().getDeferredBindingFactory().create(c);
+            }
+            return (T) GWT.deferredBindingFactory.get().create(c);
         }
         catch (ClassNotFoundException exception)
         {
