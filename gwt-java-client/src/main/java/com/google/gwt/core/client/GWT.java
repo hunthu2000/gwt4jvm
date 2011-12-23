@@ -32,9 +32,6 @@
 */
 package com.google.gwt.core.client;
 
-import java.util.concurrent.atomic.AtomicReference;
-
-import com.mind.gwt.jclient.DeferredBindingFactory;
 import com.mind.gwt.jclient.context.Context;
 
 /**
@@ -65,31 +62,6 @@ public final class GWT
     private static final String HOSTED_MODE_PERMUTATION_STRONG_NAME = "HostedMode";
 
     /**
-     * @deprecated Should be removed along with {@link GWT#setDeferredBindingFactory(DeferredBindingFactory deferredBindingFactory)}
-     */
-    @Deprecated
-    private static final AtomicReference<DeferredBindingFactory> deferredBindingFactory = new AtomicReference<DeferredBindingFactory>();
-
-    /**
-     * @deprecated Should be removed along with {@link GWT#setModuleBaseURL(String moduleBaseURL)}
-    */
-    @Deprecated
-    private static final AtomicReference<String> globalModuleBaseURL = new AtomicReference<String>();
-
-    /**
-     * @deprecated Override {@link GwtJavaClient#getDeferredBindingFactory()} method instead.
-    */
-    @Deprecated
-    public static void setDeferredBindingFactory(DeferredBindingFactory deferredBindingFactory)
-    {
-        if (deferredBindingFactory == null)
-        {
-            throw new IllegalArgumentException();
-        }
-        GWT.deferredBindingFactory.set(deferredBindingFactory);
-    }
-
-    /**
      * Instantiates a class via deferred binding.
      *
      * <p>
@@ -107,11 +79,7 @@ public final class GWT
     {
         try
         {
-            if (GWT.deferredBindingFactory.get() == null)
-            {
-                return (T) Context.getCurrentContext().getClient().getDeferredBindingFactory().create(c);
-            }
-            return (T) GWT.deferredBindingFactory.get().create(c);
+            return (T) Context.getCurrentContext().getClient().getDeferredBindingFactory().create(c);
         }
         catch (ClassNotFoundException exception)
         {
@@ -133,27 +101,6 @@ public final class GWT
     public static String getModuleBaseURL()
     {
         return Context.getCurrentContext().getClient().getModuleBaseURL();
-    }
-
-    /**
-     * @deprecated Override {@link GwtJavaClient#getModuleBaseURL()} method instead.
-    */
-    @Deprecated
-    public static void setModuleBaseURL(String moduleBaseURL)
-    {
-        if (!GWT.globalModuleBaseURL.compareAndSet(null, moduleBaseURL))
-        {
-            throw new IllegalStateException("Module base URL can be set only once! Current value is `" + GWT.globalModuleBaseURL.get() + "`");
-        }
-    }
-
-    /**
-     * @deprecated Should be removed along with {@link GWT#setModuleBaseURL(String moduleBaseURL)}
-    */
-    @Deprecated
-    public static String getGlobalModuleBaseURL()
-    {
-        return GWT.globalModuleBaseURL.get();
     }
 
     /**

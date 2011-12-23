@@ -19,7 +19,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.google.gwt.core.client.GWT;
 import com.mind.gwt.jclient.GwtJavaClient;
 
 //TODO add clients per second (tests per second) metric...
@@ -50,19 +49,6 @@ public class GwtLoadTest implements GwtJavaClientListener
     */
     public GwtLoadTest(Class<? extends GwtJavaClient> clientClass, int maxConcurrentClients, int rampUpTime, int testDuration, TimeUnit timeUnit)
     {
-        this.clientClass = clientClass;
-        this.maxConcurrentClients = maxConcurrentClients;
-        this.rampUpTime = timeUnit.toMillis(rampUpTime);
-        this.testDuration = timeUnit.toMillis(testDuration);
-    }
-
-    /**
-     * @deprecated Use {@link GwtLoadTest#GwtLoadTest(Class, int, int, int, TimeUnit)} instead...  
-    */
-    @Deprecated
-    public GwtLoadTest(String moduleBaseURL, Class<? extends GwtJavaClient> clientClass, int maxConcurrentClients, int rampUpTime, int testDuration, TimeUnit timeUnit)
-    {
-        GWT.setModuleBaseURL(moduleBaseURL);
         this.clientClass = clientClass;
         this.maxConcurrentClients = maxConcurrentClients;
         this.rampUpTime = timeUnit.toMillis(rampUpTime);
