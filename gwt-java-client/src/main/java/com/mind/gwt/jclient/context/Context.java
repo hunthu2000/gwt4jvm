@@ -69,9 +69,11 @@ public class Context
     {
         return client;
     }
-    
+
     public void execute(final Runnable runnable)
     {
+        if (client.isFinished()) return;
+
         executorService.submit(new Runnable()
         {
             @Override
@@ -85,6 +87,8 @@ public class Context
 
     public ScheduledFuture<?> schedule(long delayMs, final Runnable runnable)
     {
+        if (client.isFinished()) return null;
+
         ScheduledFuture<?> feature = scheduledExecutorService.schedule(new Runnable()
         {
             @Override
@@ -100,6 +104,8 @@ public class Context
 
     public ScheduledFuture<?> scheduleRepeating(long periodMs, final Runnable runnable)
     {
+        if (client.isFinished()) return null;
+
         ScheduledFuture<?> feature = scheduledExecutorService.scheduleWithFixedDelay(new Runnable()
         {
             @Override
