@@ -57,7 +57,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     
     public XMLHttpRequestImpl()
     {
-        snapshot = new XMLHttpRequestSnapshot(UNSENT, 0, "");
+        snapshot = new XMLHttpRequestSnapshot(UNSENT, 0, new ResponseTextSnapshot());
     }
 
     @Override
@@ -140,7 +140,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
             request.setHeader(HttpHeaders.Names.HOST, uri.getHost() + ':' + uri.getPort());
             request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
             // request.setHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
-            fireOnReadyStateChange(new XMLHttpRequestSnapshot(OPENED, 0, ""), false);
+            fireOnReadyStateChange(new XMLHttpRequestSnapshot(OPENED, 0, new ResponseTextSnapshot()), false);
         }
         catch (URISyntaxException exception)
         {
@@ -168,7 +168,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
         }
         if (channel == null)
         {
-            fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, 0, "", "Connection couldn't be established"), false);
+            fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, 0, new ResponseTextSnapshot(), "Connection couldn't be established"), false);
         }
         else 
         {
@@ -203,7 +203,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
 
             status = response.getStatus().getCode();
 
-            fireOnReadyStateChange(new XMLHttpRequestSnapshot(HEADERS_RECEIVED, status, ""), false);
+            fireOnReadyStateChange(new XMLHttpRequestSnapshot(HEADERS_RECEIVED, status, new ResponseTextSnapshot()), false);
 
             if (!response.isChunked())
             {
@@ -212,7 +212,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
                 {
                     responseText.append(content.toString(Charset.forName("UTF-8")));
                 }
-                fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, status, responseText.toString()), false);
+                fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, status, new ResponseTextSnapshot(responseText)), false);
             }
         }
         else if (event.getMessage() instanceof HttpChunk)
@@ -221,12 +221,12 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
 
             if (chunk.isLast())
             {
-                fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, status, responseText.toString()), false);
+                fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, status, new ResponseTextSnapshot(responseText)), false);
             }
             else
             {
                 responseText.append(chunk.getContent().toString(Charset.forName("UTF-8")));
-                fireOnReadyStateChange(new XMLHttpRequestSnapshot(LOADING, status, responseText.toString()), false);
+                fireOnReadyStateChange(new XMLHttpRequestSnapshot(LOADING, status, new ResponseTextSnapshot(responseText)), false);
             }
         }
         else
@@ -238,7 +238,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     @Override
     public void onException(ExceptionEvent event, boolean closeChannel) throws Exception
     {
-        fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, 0, responseText.toString(), event.getCause().getMessage()), closeChannel);
+        fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, 0, new ResponseTextSnapshot(responseText), event.getCause().getMessage()), closeChannel);
     }
 
     private void fireOnReadyStateChange(final XMLHttpRequestSnapshot snapshot, final boolean closeChannel)

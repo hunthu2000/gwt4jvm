@@ -22,15 +22,15 @@ class XMLHttpRequestSnapshot extends XMLHttpRequest
 {
     private final int readyState;
     private final int status;
-    private final String responseText;
+    private final ResponseTextSnapshot responseText;
     private final String failureMessage;
 
-    public XMLHttpRequestSnapshot(int readyState, int status, String responseText)
+    public XMLHttpRequestSnapshot(int readyState, int status, ResponseTextSnapshot responseText)
     {
         this(readyState, status, responseText, null);
     }
 
-    public XMLHttpRequestSnapshot(int readyState, int status, String responseText, String failureMessage)
+    public XMLHttpRequestSnapshot(int readyState, int status, ResponseTextSnapshot responseText, String failureMessage)
     {
         this.readyState = readyState;
         this.status = status;
@@ -71,7 +71,7 @@ class XMLHttpRequestSnapshot extends XMLHttpRequest
     @Override
     public String getResponseText()
     {
-        return responseText;
+        return responseText.toString();
     }
 
     @Override
