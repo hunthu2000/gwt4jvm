@@ -192,6 +192,8 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     @Override
     public void onMessageReceived(MessageEvent event) throws Exception
     {
+        if (context.getClient().isFinished()) return;
+
         if (event.getMessage() instanceof HttpResponse)
         {
             HttpResponse response = (HttpResponse) event.getMessage();
@@ -238,7 +240,10 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     @Override
     public void onException(ExceptionEvent event, boolean closeChannel) throws Exception
     {
-        fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, 0, new ResponseTextSnapshot(responseText), event.getCause().getMessage()), closeChannel);
+        if (!context.getClient().isFinished())
+        {
+            fireOnReadyStateChange(new XMLHttpRequestSnapshot(DONE, 0, new ResponseTextSnapshot(responseText), event.getCause().getMessage()), closeChannel);
+        }
     }
 
     private void fireOnReadyStateChange(final XMLHttpRequestSnapshot snapshot, final boolean closeChannel)
