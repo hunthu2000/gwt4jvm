@@ -17,6 +17,7 @@ package com.mind.gwt.jclient.test.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
@@ -35,5 +36,9 @@ public interface Service extends RemoteService
     WithStaticNestedClass getWithStaticNestedClass();
 
     void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass);
+
+    ExtendedCollection getExtendedCollection();
+
+    void putExtendedCollection(ExtendedCollection extendedCollection);
 
 }

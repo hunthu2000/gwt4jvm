@@ -16,6 +16,7 @@
 package com.mind.gwt.jclient.test.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
@@ -33,5 +34,9 @@ public interface ServiceAsync
     void getWithStaticNestedClass(AsyncCallback<WithStaticNestedClass> callback);
 
     void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass, AsyncCallback<Void> callback);
+
+    void getExtendedCollection(AsyncCallback<ExtendedCollection> callback);
+
+    void putExtendedCollection(ExtendedCollection extendedCollection, AsyncCallback<Void> callback);
 
 }

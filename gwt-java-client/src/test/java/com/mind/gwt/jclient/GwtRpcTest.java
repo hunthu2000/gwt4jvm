@@ -29,6 +29,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
+import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
@@ -189,6 +190,63 @@ public class GwtRpcTest
                             public void onSuccess(WithStaticNestedClass result)
                             {
                                 if (WithStaticNestedClass.createServerToClientObject().equals(result))
+                                {
+                                    success();
+                                }
+                                else
+                                {
+                                    failure();
+                                }
+                            }
+                            
+                            @Override
+                            public void onFailure(Throwable caught)
+                            {
+                                failure();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught)
+                    {
+                        failure();
+                    }
+
+                });
+            }
+        };
+        client.start();
+        client.await();
+        Assert.assertTrue(client.isSucceed());
+    }
+
+    @Test
+    public void testExtendedCollectionTransmission() throws InterruptedException
+    {
+        GwtJavaClient client = new GwtJavaClient()
+        {
+            @Override
+            public String getModuleBaseURL()
+            {
+                return MODULE_BASE_URL;
+            }
+
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                service.putExtendedCollection(ExtendedCollection.createClientToServerObject(), new AsyncCallback<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void result)
+                    {
+                        service.getExtendedCollection(new AsyncCallback<ExtendedCollection>()
+                        {
+                            @Override
+                            public void onSuccess(ExtendedCollection result)
+                            {
+                                if (ExtendedCollection.createServerToClientObject().equals(result))
                                 {
                                     success();
                                 }

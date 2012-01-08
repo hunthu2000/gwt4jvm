@@ -17,6 +17,7 @@ package com.google.gwt.user.client.rpc.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,13 +26,13 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
 import com.google.gwt.user.client.rpc.SerializationStreamWriter;
 
-public class Reflective_FieldSerializer implements TypeHandler
+public class ReflectiveTypeHandler implements TypeHandler
 {
-    private final Class<?> classToCreate; 
+    private final Class<?> type; 
 
-    public Reflective_FieldSerializer(Class<?> classToCreate)
+    public ReflectiveTypeHandler(Class<?> type)
     {
-        this.classToCreate = classToCreate;
+        this.type = type;
     }
 
     @Override
@@ -39,13 +40,18 @@ public class Reflective_FieldSerializer implements TypeHandler
     {
         try
         {
-            Constructor<?> constructor = classToCreate.getDeclaredConstructor();
+            TypeHandler typeHandler = getGeneratedTypeHandler(type.getName());
+            if (typeHandler != null)
+            {
+                return typeHandler.create(reader);
+            }
+            Constructor<?> constructor = type.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
         }
         catch (Exception exception)
         {
-            throw new RuntimeException(exception);
+            throw new SerializationException(exception);
         }
     }
 
@@ -57,6 +63,12 @@ public class Reflective_FieldSerializer implements TypeHandler
             Class<? extends Object> c = object.getClass();
             do
             {
+                TypeHandler typeHandler = getGeneratedTypeHandler(c.getName());
+                if (typeHandler != null)
+                {
+                    typeHandler.serial(writer, object);
+                    return;
+                }
                 Field[] fields = c.getDeclaredFields();
                 Arrays.sort(fields, 0, fields.length, new Comparator<Field>()
                 {
@@ -121,7 +133,7 @@ public class Reflective_FieldSerializer implements TypeHandler
         }
         catch (Exception exception)
         {
-            throw new RuntimeException(exception);
+            throw new SerializationException(exception);
         }
     }
 
@@ -133,6 +145,12 @@ public class Reflective_FieldSerializer implements TypeHandler
             Class<? extends Object> c = object.getClass();
             do
             {
+                TypeHandler typeHandler = getGeneratedTypeHandler(c.getName());
+                if (typeHandler != null)
+                {
+                    typeHandler.deserial(reader, object);
+                    return;
+                }
                 Field[] fields = c.getDeclaredFields();
                 Arrays.sort(fields, 0, fields.length, new Comparator<Field>()
                 {
@@ -198,7 +216,42 @@ public class Reflective_FieldSerializer implements TypeHandler
         }
         catch (Exception exception)
         {
-            throw new RuntimeException(exception);
+            throw new SerializationException(exception);
         }
     }
+
+    private TypeHandler getGeneratedTypeHandler(String className) throws SerializationException
+    {
+        String generatedTypeHandlerClassName = className.replace('$', '_') + "_FieldSerializer";
+        if (className.startsWith("java"))
+        {
+            generatedTypeHandlerClassName = "com.google.gwt.user.client.rpc.core." + generatedTypeHandlerClassName;
+        }
+        try
+        {
+            @SuppressWarnings("unchecked")
+            Class<TypeHandler> generatedTypeHandlerClass = (Class<TypeHandler>) Class.forName(generatedTypeHandlerClassName);
+            if (hasNativeMethods(generatedTypeHandlerClass))
+            {
+                return null;
+            }
+            Constructor<TypeHandler> constructor = generatedTypeHandlerClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        }
+        catch (Exception exception)
+        {
+            throw new SerializationException(exception);
+        }
+    }
+
+    private static boolean hasNativeMethods(Class<?> c)
+    {
+        for (Method method : c.getDeclaredMethods())
+        {
+            if (method.toString().contains(" native ")) return true; 
+        }
+        return false;
+    }
+
 }

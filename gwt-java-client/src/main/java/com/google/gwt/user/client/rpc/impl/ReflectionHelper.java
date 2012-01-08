@@ -40,46 +40,37 @@ import java.lang.reflect.Constructor;
 public class ReflectionHelper
 {
     /**
-     * Loads {@code c} using Class.forName.
+     * Loads class using {@link Class#forName(String)}.
     */
-    public static Class<?> loadClass(String c) throws Exception
+    public static Class<?> loadClass(String classToLoad)
     {
-        return Class.forName(c);
+        try
+        {
+            return Class.forName(classToLoad);
+        }
+        catch (ClassNotFoundException exception)
+        {
+            throw new RuntimeException("Unable to find class " + classToLoad, exception);
+        }
     }
 
     /**
-     * Creates a new instance of {@code c}. The class must have a no-arg
-     * constructor. The constructor may have any access modifier (for example,
-     * private).
+     * Creates a new instance of class. The class must have default constructor.   
     */
     @SuppressWarnings("unchecked")
-    public static <T> T newInstance(Class<T> c) throws Exception
+    public static <T> T newInstance(Class<T> classToInstantiate) throws Exception
     {
-        if (c.getName().endsWith("_FieldSerializer") && !c.getName().startsWith("com.google.gwt.user.client.rpc.core.java"))
+        if (TypeHandler.class.isAssignableFrom(classToInstantiate))
         {
-            Class<?> classToCreate = Class.forName(fieldSerializerToClass(c.getName()));
-            if (!classToCreate.isEnum())
-            {
-                return (T) new Reflective_FieldSerializer(classToCreate);
-            }
+            String type = classToInstantiate.getName().replaceFirst("_FieldSerializer$", "").replace('_', '$').replaceFirst("^com.google.gwt.user.client.rpc.core.java", "java");
+            return (T) new ReflectiveTypeHandler(Class.forName(type));
         }
-        Constructor<T> constructor = c.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        return constructor.newInstance();
-    }
-
-    /**
-     * Return name of the class whose objects this field serializer is on duty to serialize
-     * or deserialize. GWT's default filed serializers has following naming:    
-     * 
-     *     SomeClass$SomeInnerClass -> SomeClass_SomeInnerClass_FieldSerializer
-     * 
-     * @param fieldSerializer - then name of field serializer.
-     * @return name of the class which this field serializer is responsible for.
-     */
-    private static String fieldSerializerToClass(String fieldSerializer)
-    {
-        return fieldSerializer.replaceFirst("_FieldSerializer$", "").replace("_", "$");
+        else
+        {
+            Constructor<T> constructor = classToInstantiate.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        }
     }
 
 }

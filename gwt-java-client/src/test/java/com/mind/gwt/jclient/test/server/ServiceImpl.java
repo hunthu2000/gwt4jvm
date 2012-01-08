@@ -17,6 +17,7 @@ package com.mind.gwt.jclient.test.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mind.gwt.jclient.test.client.Service;
+import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
@@ -64,6 +65,21 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
     public void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass)
     {
         if (!withStaticNestedClass.equals(WithStaticNestedClass.createClientToServerObject()))
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public ExtendedCollection getExtendedCollection()
+    {
+        return ExtendedCollection.createServerToClientObject();
+    }
+
+    @Override
+    public void putExtendedCollection(ExtendedCollection extendedCollection)
+    {
+        if (!extendedCollection.equals(ExtendedCollection.createClientToServerObject()))
         {
             throw new IllegalArgumentException();
         }
