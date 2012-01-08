@@ -89,6 +89,10 @@ public class GwtRpcTest
                                 {
                                     success();
                                 }
+                                else
+                                {
+                                    failure();
+                                }
                             }
 
                             @Override
@@ -109,6 +113,10 @@ public class GwtRpcTest
         };
         client.start();
         client.await();
+        if (client.getUncaughtException() != null)
+        {
+            client.getUncaughtException().printStackTrace();
+        }
         Assert.assertTrue(client.isSucceed());
     }
 
@@ -141,6 +149,10 @@ public class GwtRpcTest
                                 {
                                     success();
                                 }
+                                else
+                                {
+                                    failure();
+                                }
                             }
 
                             @Override
@@ -161,6 +173,10 @@ public class GwtRpcTest
         };
         client.start();
         client.await();
+        if (client.getUncaughtException() != null)
+        {
+            client.getUncaughtException().printStackTrace();
+        }
         Assert.assertTrue(client.isSucceed());
     }
 
@@ -218,6 +234,10 @@ public class GwtRpcTest
         };
         client.start();
         client.await();
+        if (client.getUncaughtException() != null)
+        {
+            client.getUncaughtException().printStackTrace();
+        }
         Assert.assertTrue(client.isSucceed());
     }
 
@@ -275,6 +295,10 @@ public class GwtRpcTest
         };
         client.start();
         client.await();
+        if (client.getUncaughtException() != null)
+        {
+            client.getUncaughtException().printStackTrace();
+        }
         Assert.assertTrue(client.isSucceed());
     }
 
