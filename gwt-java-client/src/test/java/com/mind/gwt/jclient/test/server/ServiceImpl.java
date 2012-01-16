@@ -18,6 +18,7 @@ package com.mind.gwt.jclient.test.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
+import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
@@ -50,6 +51,21 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
     public void putMaxPrimitives(Primitives primitives)
     {
         if (!Primitives.createMaxValue().equals(primitives))
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public ExtendedPrimitives getExtendedPrimitives()
+    {
+        return ExtendedPrimitives.createServerToClientObject();
+    }
+
+    @Override
+    public void putExtendedPrimitives(ExtendedPrimitives extendedPrimitives)
+    {
+        if (!ExtendedPrimitives.createClientToServerObject().equals(extendedPrimitives))
         {
             throw new IllegalArgumentException();
         }

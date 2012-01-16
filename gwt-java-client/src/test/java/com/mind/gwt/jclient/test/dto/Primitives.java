@@ -50,6 +50,18 @@ public class Primitives implements Serializable
         this.floatPrimitive = floatPrimitive;
         this.doublePrimitive = doublePrimitive;
     }
+    
+    public Primitives(Primitives primitives)
+    {
+        this.booleanPrimitive = primitives.booleanPrimitive;
+        this.bytePrimitive = primitives.bytePrimitive;
+        this.charPrimitive = primitives.charPrimitive;
+        this.shortPrimitive = primitives.shortPrimitive;
+        this.intPrimitive = primitives.intPrimitive;
+        this.longPrimitive = primitives.longPrimitive;
+        this.floatPrimitive = primitives.floatPrimitive;
+        this.doublePrimitive = primitives.doublePrimitive;
+    }
 
     public static Primitives createMaxValue()
     {

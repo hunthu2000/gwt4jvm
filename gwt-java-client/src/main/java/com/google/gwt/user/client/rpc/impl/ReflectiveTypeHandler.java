@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
@@ -40,7 +41,7 @@ public class ReflectiveTypeHandler implements TypeHandler
     {
         try
         {
-            TypeHandler typeHandler = getGeneratedTypeHandler(type.getName());
+            TypeHandler typeHandler = getGeneratedTypeHandler(type);
             if (typeHandler != null)
             {
                 return typeHandler.create(reader);
@@ -63,7 +64,7 @@ public class ReflectiveTypeHandler implements TypeHandler
             Class<? extends Object> c = object.getClass();
             do
             {
-                TypeHandler typeHandler = getGeneratedTypeHandler(c.getName());
+                TypeHandler typeHandler = getGeneratedTypeHandler(c);
                 if (typeHandler != null)
                 {
                     typeHandler.serial(writer, object);
@@ -81,7 +82,7 @@ public class ReflectiveTypeHandler implements TypeHandler
                 for (Field field : fields)
                 {
                     field.setAccessible(true);
-                    
+
                     int fieldModifiers = field.getModifiers();
                     if (Modifier.isStatic(fieldModifiers) || Modifier.isTransient(fieldModifiers))
                     {
@@ -145,7 +146,7 @@ public class ReflectiveTypeHandler implements TypeHandler
             Class<? extends Object> c = object.getClass();
             do
             {
-                TypeHandler typeHandler = getGeneratedTypeHandler(c.getName());
+                TypeHandler typeHandler = getGeneratedTypeHandler(c);
                 if (typeHandler != null)
                 {
                     typeHandler.deserial(reader, object);
@@ -220,29 +221,53 @@ public class ReflectiveTypeHandler implements TypeHandler
         }
     }
 
-    private TypeHandler getGeneratedTypeHandler(String className) throws SerializationException
+    private TypeHandler getGeneratedTypeHandler(Class<?> c) throws SerializationException
     {
-        String generatedTypeHandlerClassName = className.replace('$', '_') + "_FieldSerializer";
-        if (className.startsWith("java"))
-        {
-            generatedTypeHandlerClassName = "com.google.gwt.user.client.rpc.core." + generatedTypeHandlerClassName;
-        }
         try
         {
-            @SuppressWarnings("unchecked")
-            Class<TypeHandler> generatedTypeHandlerClass = (Class<TypeHandler>) Class.forName(generatedTypeHandlerClassName);
-            if (hasNativeMethods(generatedTypeHandlerClass))
+            LinkedList<Class<TypeHandler>> typeHandlers = getTypeHandlers(c);
+            for (Class<TypeHandler> typeHandler : typeHandlers)
             {
-                return null;
+                if (hasNativeMethods(typeHandler))
+                {
+                    return null;
+                }
             }
-            Constructor<TypeHandler> constructor = generatedTypeHandlerClass.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return constructor.newInstance();
+            return typeHandlers.getFirst().getDeclaredConstructor().newInstance();
         }
         catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
+    }
+
+    private static LinkedList<Class<TypeHandler>> getTypeHandlers(Class<?> c)
+    {
+        LinkedList<Class<TypeHandler>> typeHandlers = new LinkedList<Class<TypeHandler>>();
+        do
+        {
+            try
+            {
+                typeHandlers.add(getGeneratedTypeHandlerClass(c));
+            }
+            catch (ClassNotFoundException exception)
+            {
+                break; 
+            }
+        }
+        while ((c = c.getSuperclass()) != Object.class);
+        return typeHandlers;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<TypeHandler> getGeneratedTypeHandlerClass(Class<?> c) throws ClassNotFoundException
+    {
+        String generatedTypeHandlerClassName = c.getName().replace('$', '_') + "_FieldSerializer";
+        if (generatedTypeHandlerClassName.startsWith("java"))
+        {
+            generatedTypeHandlerClassName = "com.google.gwt.user.client.rpc.core." + generatedTypeHandlerClassName;
+        }
+        return (Class<TypeHandler>) Class.forName(generatedTypeHandlerClassName);
     }
 
     private static boolean hasNativeMethods(Class<?> c)

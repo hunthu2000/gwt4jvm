@@ -30,6 +30,7 @@ import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
+import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
@@ -181,6 +182,66 @@ public class GwtRpcTest
     }
 
     @Test
+    public void testExtendedPrimitivesTransmission() throws InterruptedException
+    {
+        GwtJavaClient client = new GwtJavaClient()
+        {
+            @Override
+            public String getModuleBaseURL()
+            {
+                return MODULE_BASE_URL;
+            }
+
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                service.putExtendedPrimitives(ExtendedPrimitives.createClientToServerObject(), new AsyncCallback<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void result)
+                    {
+                        service.getExtendedPrimitives(new AsyncCallback<ExtendedPrimitives>()
+                        {
+                            @Override
+                            public void onSuccess(ExtendedPrimitives result)
+                            {
+                                if (ExtendedPrimitives.createServerToClientObject().equals(result))
+                                {
+                                    success();
+                                }
+                                else
+                                {
+                                    failure();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Throwable caught)
+                            {
+                                failure();
+                            }
+                        });
+                    }
+                    
+                    @Override
+                    public void onFailure(Throwable caught)
+                    {
+                        failure();
+                    }
+                });
+            }
+        };
+        client.start();
+        client.await();
+        if (client.getUncaughtException() != null)
+        {
+            client.getUncaughtException().printStackTrace();
+        }
+        Assert.assertTrue(client.isSucceed());
+    }
+
+    @Test
     public void testWithStaticNestedClassTransmission() throws InterruptedException
     {
         GwtJavaClient client = new GwtJavaClient()
@@ -275,7 +336,7 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-                            
+
                             @Override
                             public void onFailure(Throwable caught)
                             {
