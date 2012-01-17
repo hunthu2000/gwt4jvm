@@ -20,6 +20,7 @@ import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
 public interface ServiceAsync
@@ -43,5 +44,9 @@ public interface ServiceAsync
     void getExtendedCollection(AsyncCallback<ExtendedCollection> callback);
 
     void putExtendedCollection(ExtendedCollection extendedCollection, AsyncCallback<Void> callback);
+
+    void getAggregatedEnumeration(AsyncCallback<AggregatedEnumeration> callback);
+
+    void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, AsyncCallback<Void> callback);
 
 }

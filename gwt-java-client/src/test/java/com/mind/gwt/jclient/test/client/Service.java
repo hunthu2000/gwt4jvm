@@ -21,6 +21,7 @@ import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
 @RemoteServiceRelativePath("service")
@@ -45,5 +46,9 @@ public interface Service extends RemoteService
     ExtendedCollection getExtendedCollection();
 
     void putExtendedCollection(ExtendedCollection extendedCollection);
+
+    AggregatedEnumeration getAggregatedEnumeration();
+
+    void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration);
 
 }

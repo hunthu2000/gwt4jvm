@@ -21,6 +21,7 @@ import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
 @SuppressWarnings("serial")
@@ -99,6 +100,21 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
         {
             throw new IllegalArgumentException();
         }
+    }
+
+    @Override
+    public AggregatedEnumeration getAggregatedEnumeration()
+    {
+        return AggregatedEnumeration.createServerToClientObject();
+    }
+
+    @Override
+    public void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration)
+    {
+        if (!aggregatedEnumeration.equals(AggregatedEnumeration.createClientToServerObject()))
+        {
+            throw new IllegalArgumentException();
+       }
     }
 
 }

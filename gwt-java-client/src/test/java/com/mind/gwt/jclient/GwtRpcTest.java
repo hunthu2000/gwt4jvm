@@ -33,6 +33,7 @@ import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
+import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 import com.mind.gwt.jclient.test.server.ServiceImpl;
 
@@ -328,6 +329,67 @@ public class GwtRpcTest
                             public void onSuccess(ExtendedCollection result)
                             {
                                 if (ExtendedCollection.createServerToClientObject().equals(result))
+                                {
+                                    success();
+                                }
+                                else
+                                {
+                                    failure();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Throwable caught)
+                            {
+                                failure();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught)
+                    {
+                        failure();
+                    }
+
+                });
+            }
+        };
+        client.start();
+        client.await();
+        if (client.getUncaughtException() != null)
+        {
+            client.getUncaughtException().printStackTrace();
+        }
+        Assert.assertTrue(client.isSucceed());
+    }
+
+    @Test
+    public void testAggregatedEnumerationTransmission() throws InterruptedException
+    {
+        GwtJavaClient client = new GwtJavaClient()
+        {
+            @Override
+            public String getModuleBaseURL()
+            {
+                return MODULE_BASE_URL;
+            }
+
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                service.putAggregatedEnumeration(AggregatedEnumeration.createClientToServerObject(), new AsyncCallback<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void result)
+                    {
+                        service.getAggregatedEnumeration(new AsyncCallback<AggregatedEnumeration>()
+                        {
+                            @Override
+                            public void onSuccess(AggregatedEnumeration result)
+                            {
+                                if (AggregatedEnumeration.createServerToClientObject().equals(result))
                                 {
                                     success();
                                 }

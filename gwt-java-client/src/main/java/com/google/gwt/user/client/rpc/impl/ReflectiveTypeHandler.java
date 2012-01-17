@@ -226,11 +226,14 @@ public class ReflectiveTypeHandler implements TypeHandler
         try
         {
             LinkedList<Class<TypeHandler>> typeHandlers = getTypeHandlers(c);
-            for (Class<TypeHandler> typeHandler : typeHandlers)
+            if (!c.isEnum())
             {
-                if (hasNativeMethods(typeHandler))
+                for (Class<TypeHandler> typeHandler : typeHandlers)
                 {
-                    return null;
+                    if (hasNativeMethods(typeHandler))
+                    {
+                        return null;
+                    }
                 }
             }
             return typeHandlers.getFirst().getDeclaredConstructor().newInstance();
