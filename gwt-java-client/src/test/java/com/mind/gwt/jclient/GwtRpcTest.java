@@ -39,14 +39,16 @@ import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public class GwtRpcTest
 {
-    private static final String MODULE_BASE_URL = "http://localhost:8080/test/";
+    private static final int JETTY_PORT = Integer.getInteger("gwt.java.client.test.port", 8080);
+    
+    private static final String MODULE_BASE_URL = "http://localhost:" + JETTY_PORT + "/test/";
 
     private static Server jetty;
 
     @BeforeClass
     public static void setUp() throws Exception
     {
-        jetty = new Server(8080);
+        jetty = new Server(JETTY_PORT);
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.setContextPath("/");
         servletContextHandler.setResourceBase("target/test-war");
