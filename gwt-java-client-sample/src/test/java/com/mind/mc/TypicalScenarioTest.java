@@ -34,7 +34,10 @@ import com.mind.mc.dto.MovieDTO;
 public class TypicalScenarioTest extends GwtJavaClient
 {
     private static final String MODULE_BASE_URL = System.getProperty("moduleBaseURL", "http://localhost:8080/mc/");
-    
+    private static final int CONCURRENT_USERS = Integer.getInteger("concurrentUsers", 100);
+    private static final int RAMP_UP_SECONDS = Integer.getInteger("rampUpSeconds", 10);
+    private static final int TEST_DURATION_SECONDS = Integer.getInteger("testDurationSeconds", 30);
+
     @Override
     public String getModuleBaseURL()
     {       
@@ -98,7 +101,7 @@ public class TypicalScenarioTest extends GwtJavaClient
     {
         final AtomicLong succeed = new AtomicLong();
         final AtomicLong failure = new AtomicLong();
-        GwtLoadTest gwtLoadTest = new GwtLoadTest(getClass(), Integer.getInteger("maxConcurrentClients", 100), Integer.getInteger("rampUpTime", 10), Integer.getInteger("testDuration", 30), TimeUnit.SECONDS)
+        GwtLoadTest gwtLoadTest = new GwtLoadTest(getClass(), CONCURRENT_USERS, RAMP_UP_SECONDS, TEST_DURATION_SECONDS, TimeUnit.SECONDS)
         {
             @Override
             public void onFinish(GwtJavaClient client)
