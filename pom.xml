@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -28,7 +29,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gwt.version>2.4.0</gwt.version>
-        <gwt.java.client.version>1.0-SNAPSHOT</gwt.java.client.version>
+        <gwtJavaClient.version>1.0-SNAPSHOT</gwtJavaClient.version>
     </properties>
 
     <dependencyManagement>
@@ -76,18 +77,18 @@
             <dependency>
                 <groupId>com.mind.gwt</groupId>
                 <artifactId>gwt-java-client-overrides</artifactId>
-                <version>${gwt.java.client.version}</version>
+                <version>${gwtJavaClient.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mind.gwt</groupId>
                 <artifactId>gwt-java-client</artifactId>
-                <version>${gwt.java.client.version}</version>
+                <version>${gwtJavaClient.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mind.gwt</groupId>
                 <artifactId>gwt-java-client-sample</artifactId>
                 <classifier>classes</classifier>
-                <version>${gwt.java.client.version}</version>
+                <version>${gwtJavaClient.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
