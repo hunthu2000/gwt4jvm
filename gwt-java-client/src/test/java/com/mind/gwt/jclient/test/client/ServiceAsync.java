@@ -15,7 +15,10 @@
 */
 package com.mind.gwt.jclient.test.client;
 
+import java.util.LinkedList;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.mind.gwt.jclient.test.dto.Cookie;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
@@ -48,5 +51,9 @@ public interface ServiceAsync
     void getAggregatedEnumeration(AsyncCallback<AggregatedEnumeration> callback);
 
     void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, AsyncCallback<Void> callback);
+
+    void getCookies(AsyncCallback<String> callback);
+
+    void setCookies(LinkedList<Cookie> cookies, AsyncCallback<Void> callback);
 
 }

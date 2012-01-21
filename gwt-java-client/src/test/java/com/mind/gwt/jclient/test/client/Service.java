@@ -15,8 +15,11 @@
 */
 package com.mind.gwt.jclient.test.client;
 
+import java.util.LinkedList;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.mind.gwt.jclient.test.dto.Cookie;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
@@ -50,5 +53,9 @@ public interface Service extends RemoteService
     AggregatedEnumeration getAggregatedEnumeration();
 
     void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration);
+
+    String getCookies();
+
+    void setCookies(LinkedList<Cookie> cookies);
 
 }

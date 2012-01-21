@@ -15,8 +15,12 @@
 */
 package com.mind.gwt.jclient.test.server;
 
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mind.gwt.jclient.test.client.Service;
+import com.mind.gwt.jclient.test.dto.Cookie;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
 import com.mind.gwt.jclient.test.dto.ExtendedPrimitives;
 import com.mind.gwt.jclient.test.dto.Primitives;
@@ -115,6 +119,32 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
         {
             throw new IllegalArgumentException();
        }
+    }
+
+    @Override
+    public String getCookies()
+    {
+        return getThreadLocalRequest().getHeader("Cookie");
+    }
+
+    @Override
+    public void setCookies(LinkedList<Cookie> cookies)
+    {
+        for (Cookie cookie : cookies)
+        {
+            javax.servlet.http.Cookie c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
+            if (cookie.getExpires() != null)
+            {
+                c.setMaxAge((int) TimeUnit.SECONDS.convert(cookie.getExpires().getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS));
+            }
+            if (cookie.getDomain() != null)
+            {
+                c.setDomain(cookie.getDomain());
+            }
+            c.setPath(cookie.getPath());
+            c.setSecure(cookie.isSecure());
+            getThreadLocalResponse().addCookie(c);
+        }
     }
 
 }

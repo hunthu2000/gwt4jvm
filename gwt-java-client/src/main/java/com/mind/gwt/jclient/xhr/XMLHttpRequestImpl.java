@@ -18,7 +18,7 @@ package com.mind.gwt.jclient.xhr;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.Set;
+import java.util.Collection;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -44,7 +44,8 @@ import com.mind.gwt.jclient.xhr.ChannelService.ChannelMessageHandler;
 public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessageHandler
 {
     private static final ChannelService channelService = new ChannelService();
-
+    private static final CookieDecoder cookieDecoder = new CookieDecoder();
+ 
     private final Context context = Context.getCurrentContext();
     private final ResponseText responseText = new ResponseText();
 
@@ -156,15 +157,15 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
             request.setContent(ChannelBuffers.copiedBuffer(requestData, Charset.forName("UTF-8")));
             request.setHeader(HttpHeaders.Names.CONTENT_LENGTH, requestData.length());
         }
-        CookieEncoder encoder = new CookieEncoder(false);
-        Set<Cookie> cookes = context.getCookies();
+        CookieEncoder cookieEncoder = new CookieEncoder(false);
+        Collection<Cookie> cookes = context.getCookies();
         if (!cookes.isEmpty())
         {
             for (Cookie cookie : cookes)
             {
-                encoder.addCookie(cookie);
+                cookieEncoder.addCookie(cookie);
             }
-            request.setHeader("Cookie", encoder.encode());
+            request.setHeader("Cookie", cookieEncoder.encode());
         }
         if (channel == null)
         {
@@ -198,9 +199,9 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
         {
             HttpResponse response = (HttpResponse) event.getMessage();
 
-            if (response.getHeader("Set-Cookie") != null)
+            for (String cookieHeader : response.getHeaders("Set-Cookie"))
             {
-                context.addCookies(new CookieDecoder().decode(response.getHeader("Set-Cookie")));
+                context.getCookies().addAll(cookieDecoder.decode(cookieHeader));
             }
 
             status = response.getStatus().getCode();

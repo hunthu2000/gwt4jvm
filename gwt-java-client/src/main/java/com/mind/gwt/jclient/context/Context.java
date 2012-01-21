@@ -16,9 +16,9 @@
 package com.mind.gwt.jclient.context;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -38,7 +38,7 @@ public class Context
     private final UncaughtExceptionHandler uncaughtExceptionHandler;
     private final ExecutorService executorService = ExecutorServiceFactory.getExecutorService(this);
     private final ScheduledExecutorService scheduledExecutorService = ExecutorServiceFactory.getScheduledExecutorService();
-    private final Set<Cookie> cookies = new CopyOnWriteArraySet<Cookie>();
+    private final Set<Cookie> cookies = Collections.newSetFromMap(new ConcurrentHashMap<Cookie, Boolean>());
     private final Set<ScheduledFuture<?>> scheduledFutures = Collections.newSetFromMap(new ConcurrentHashMap<ScheduledFuture<?>, Boolean>());
 
     public Context(GwtJavaClient client, UncaughtExceptionHandler uncaughtExceptionHandler)
@@ -119,14 +119,23 @@ public class Context
         return feature;
     }
 
+    /**
+     * {@link Deprecated} Modify <tt>Set</tt> returned by {@link #getCookies() getCookies} method instead.
+    */
+    @Deprecated
     public void addCookies(Set<Cookie> cookies)
     {
         this.cookies.addAll(cookies);
     }
 
+    /**
+     * Returns a mutable but thread-safe <tt>Set</tt> of cookies associated with the current <tt>Context</tt>. The 
+     * result <tt>Set</tt> is backed by {@link Map} and both of {@link Set#addAll(java.util.Collection) addAll} and
+     * {@link Set#add(Object) add} methods not only add new cookies to the context but replace already contained. 
+    */
     public Set<Cookie> getCookies()
     {
-        return Collections.unmodifiableSet(cookies);
+        return cookies;
     }
 
     private synchronized void runInContext(Runnable runnable)
