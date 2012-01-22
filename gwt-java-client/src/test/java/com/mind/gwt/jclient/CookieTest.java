@@ -17,62 +17,35 @@ package com.mind.gwt.jclient;
 
 import java.util.LinkedList;
 
-import junit.framework.Assert;
-
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
 import com.mind.gwt.jclient.test.dto.Cookie;
-import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public class CookieTest
 {
-    private static final int JETTY_PORT = Integer.getInteger("gwt.java.client.test.port", 8080);
-    
-    private static final String MODULE_BASE_URL = "http://localhost:" + JETTY_PORT + "/test/";
-
-    private static Server jetty;
-
     @BeforeClass
     public static void setUp() throws Exception
     {
-        jetty = new Server(JETTY_PORT);
-        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.setContextPath("/");
-        servletContextHandler.setResourceBase("target/test-war");
-        servletContextHandler.addServlet(new ServletHolder(new ServiceImpl()), "/test/service");
-        jetty.setHandler(servletContextHandler);
-        jetty.start();
+        TestGwtJavaClient.startJetty();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception
     {
-        jetty.stop();
-        jetty.join();
+        TestGwtJavaClient.stopJetty();
     }
 
     @Test
     public void testCookieTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
@@ -80,7 +53,7 @@ public class CookieTest
                 LinkedList<Cookie> cookies = new LinkedList<Cookie>();
                 cookies.add(new Cookie("ServerCookieName1", "ServerCookieValue1", null, null, null, false));
                 cookies.add(new Cookie("ServerCookieName2", "ServerCookieValue2", null, null, null, false));
-                service.setCookies(cookies, new AsyncCallback<Void>()
+                service.setCookies(cookies, new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
@@ -88,7 +61,7 @@ public class CookieTest
                         if ("ServerCookieValue1".equals(Cookies.getCookie("ServerCookieName1")) && "ServerCookieValue2".equals(Cookies.getCookie("ServerCookieName2")))
                         {
                             Cookies.setCookie("ClientCookieName", "ClientCookieValue");
-                            service.getCookies(new AsyncCallback<String>()
+                            service.getCookies(new SimpleAsyncCallback<String>()
                             {
                                 @Override
                                 public void onSuccess(String result)
@@ -102,13 +75,6 @@ public class CookieTest
                                         failure();
                                     }
                                 }
-                                
-                                @Override
-                                public void onFailure(Throwable caught)
-                                {
-                                    failure();
-                                }
-
                             });
                         }
                         else
@@ -116,23 +82,9 @@ public class CookieTest
                             failure();
                         }
                     }
-
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
-                    }
-
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
 }

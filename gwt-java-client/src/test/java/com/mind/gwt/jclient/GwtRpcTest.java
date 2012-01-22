@@ -15,18 +15,11 @@
 */
 package com.mind.gwt.jclient;
 
-import junit.framework.Assert;
-
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
@@ -35,56 +28,36 @@ import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
-import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public class GwtRpcTest
 {
-    private static final int JETTY_PORT = Integer.getInteger("gwt.java.client.test.port", 8080);
-    
-    private static final String MODULE_BASE_URL = "http://localhost:" + JETTY_PORT + "/test/";
-
-    private static Server jetty;
-
     @BeforeClass
     public static void setUp() throws Exception
     {
-        jetty = new Server(JETTY_PORT);
-        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.setContextPath("/");
-        servletContextHandler.setResourceBase("target/test-war");
-        servletContextHandler.addServlet(new ServletHolder(new ServiceImpl()), "/test/service");
-        jetty.setHandler(servletContextHandler);
-        jetty.start();
+        TestGwtJavaClient.startJetty();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception
     {
-        jetty.stop();
-        jetty.join();
+        TestGwtJavaClient.stopJetty();
     }
 
     @Test
     public void testPrimitiveWrappersTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putMaxPrimitiveWrappers(PrimitiveWrappers.createMaxValue(), new AsyncCallback<Void>()
+                service.putMaxPrimitiveWrappers(PrimitiveWrappers.createMaxValue(), new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
                     {
-                        service.getMinPrimitiveWrappers(new AsyncCallback<PrimitiveWrappers>()
+                        service.getMinPrimitiveWrappers(new SimpleAsyncCallback<PrimitiveWrappers>()
                         {
                             @Override
                             public void onSuccess(PrimitiveWrappers result)
@@ -98,53 +71,28 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-
-                            @Override
-                            public void onFailure(Throwable caught)
-                            {
-                                failure();
-                            }
                         });
-                    }
-                    
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
                     }
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
     @Test
     public void testPrimitivesTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putMaxPrimitives(Primitives.createMaxValue(), new AsyncCallback<Void>()
+                service.putMaxPrimitives(Primitives.createMaxValue(), new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
                     {
-                        service.getMinPrimitives(new AsyncCallback<Primitives>()
+                        service.getMinPrimitives(new SimpleAsyncCallback<Primitives>()
                         {
                             @Override
                             public void onSuccess(Primitives result)
@@ -158,53 +106,28 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-
-                            @Override
-                            public void onFailure(Throwable caught)
-                            {
-                                failure();
-                            }
                         });
-                    }
-                    
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
                     }
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
     @Test
     public void testExtendedPrimitivesTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putExtendedPrimitives(ExtendedPrimitives.createClientToServerObject(), new AsyncCallback<Void>()
+                service.putExtendedPrimitives(ExtendedPrimitives.createClientToServerObject(), new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
                     {
-                        service.getExtendedPrimitives(new AsyncCallback<ExtendedPrimitives>()
+                        service.getExtendedPrimitives(new SimpleAsyncCallback<ExtendedPrimitives>()
                         {
                             @Override
                             public void onSuccess(ExtendedPrimitives result)
@@ -218,53 +141,28 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-
-                            @Override
-                            public void onFailure(Throwable caught)
-                            {
-                                failure();
-                            }
                         });
-                    }
-                    
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
                     }
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
     @Test
     public void testWithStaticNestedClassTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putWithStaticNestedClass(WithStaticNestedClass.createClientToServerObject(), new AsyncCallback<Void>()
+                service.putWithStaticNestedClass(WithStaticNestedClass.createClientToServerObject(), new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
                     {
-                        service.getWithStaticNestedClass(new AsyncCallback<WithStaticNestedClass>()
+                        service.getWithStaticNestedClass(new SimpleAsyncCallback<WithStaticNestedClass>()
                         {
                             @Override
                             public void onSuccess(WithStaticNestedClass result)
@@ -278,54 +176,28 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-                            
-                            @Override
-                            public void onFailure(Throwable caught)
-                            {
-                                failure();
-                            }
                         });
                     }
-
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
-                    }
-
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
     @Test
     public void testExtendedCollectionTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putExtendedCollection(ExtendedCollection.createClientToServerObject(), new AsyncCallback<Void>()
+                service.putExtendedCollection(ExtendedCollection.createClientToServerObject(), new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
                     {
-                        service.getExtendedCollection(new AsyncCallback<ExtendedCollection>()
+                        service.getExtendedCollection(new SimpleAsyncCallback<ExtendedCollection>()
                         {
                             @Override
                             public void onSuccess(ExtendedCollection result)
@@ -339,54 +211,28 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-
-                            @Override
-                            public void onFailure(Throwable caught)
-                            {
-                                failure();
-                            }
                         });
                     }
-
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
-                    }
-
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
     @Test
     public void testAggregatedEnumerationTransmission() throws InterruptedException
     {
-        GwtJavaClient client = new GwtJavaClient()
+        new TestGwtJavaClient()
         {
-            @Override
-            public String getModuleBaseURL()
-            {
-                return MODULE_BASE_URL;
-            }
-
             @Override
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putAggregatedEnumeration(AggregatedEnumeration.createClientToServerObject(), new AsyncCallback<Void>()
+                service.putAggregatedEnumeration(AggregatedEnumeration.createClientToServerObject(), new SimpleAsyncCallback<Void>()
                 {
                     @Override
                     public void onSuccess(Void result)
                     {
-                        service.getAggregatedEnumeration(new AsyncCallback<AggregatedEnumeration>()
+                        service.getAggregatedEnumeration(new SimpleAsyncCallback<AggregatedEnumeration>()
                         {
                             @Override
                             public void onSuccess(AggregatedEnumeration result)
@@ -400,31 +246,11 @@ public class GwtRpcTest
                                     failure();
                                 }
                             }
-
-                            @Override
-                            public void onFailure(Throwable caught)
-                            {
-                                failure();
-                            }
                         });
                     }
-
-                    @Override
-                    public void onFailure(Throwable caught)
-                    {
-                        failure();
-                    }
-
                 });
             }
-        };
-        client.start();
-        client.await();
-        if (client.getUncaughtException() != null)
-        {
-            client.getUncaughtException().printStackTrace();
-        }
-        Assert.assertTrue(client.isSucceed());
+        }.execute();
     }
 
 }
