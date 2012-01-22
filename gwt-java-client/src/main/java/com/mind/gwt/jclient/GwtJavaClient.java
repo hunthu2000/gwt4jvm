@@ -28,11 +28,36 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.mind.gwt.jclient.context.Context;
 import com.mind.gwt.jclient.metrics.Metrics;
 
-public abstract class GwtJavaClient implements Runnable
+/**
+ * <tt>GwtJavaClient</tt> is an implementation of {@link EntryPoint} whose {@link #onModuleLoad() onModuleLoad} method
+ * can be {@link #start() executed} inside the JVM in an environment that provides a pure Java implementation of a few
+ * native objects of GWT SDK. Here is the complete list of them:
+ *
+ * <ul>
+ *   <li>{@link com.google.gwt.xhr.client.XMLHttpRequest}
+ *   <li>{@link com.google.gwt.core.client.GWT}
+ *   <li>{@link com.google.gwt.user.client.Window}
+ *   <li>{@link com.google.gwt.user.client.Cookies}
+ *   <li>{@link com.google.gwt.user.client.Timer}
+ * </ul>
+ *
+ * <p>There is a special support of GWT-RPC services. They can be used in exactly the same way as they always were. But
+ * that's all. There is no support of GUI or any other custom JSNI. This means that <tt>GwtJavaClient</tt> doesn't open
+ * the door to launch the entire GWT-applications inside the JVM.
+ *
+ * <p>Any instance of <tt>GwtJavaClient</tt> is disposable (i.e. it could be {@link #start() executed} only once), but
+ * it is possible to create as many instances as needed and make them all working concurrently. Each instance will have
+ * its own isolated environment. This feature in conjunction with {@link GwtLoadTest} simplifies the task of performing
+ * load testing of GWT-RPC-based applications.
+ * 
+ * @see GwtLoadTest
+*/
+public abstract class GwtJavaClient implements EntryPoint
 {
     private final Set<GwtJavaClientListener> listeners = new CopyOnWriteArraySet<GwtJavaClientListener>();
     private final ConcurrentMap<Class<? extends Metrics>, Collection<Metrics>> metricsMap = new ConcurrentHashMap<Class<? extends Metrics>, Collection<Metrics>>();
@@ -44,6 +69,20 @@ public abstract class GwtJavaClient implements Runnable
 
     public abstract String getModuleBaseURL();
 
+    /**
+     * @deprecated Use {@link #onModuleLoad() onModuleLoad} method instead.  
+    */
+    @Deprecated
+    public void run() {}
+
+    public void onModuleLoad()
+    {
+        run();
+    }
+
+    /**
+     * Starts executing {@link #onModuleLoad() onModuleLoad} method in a newly created <tt>Context</tt>. 
+    */
     public void start()
     {
         if (!startTime.compareAndSet(-1, System.currentTimeMillis()))
@@ -60,7 +99,15 @@ public abstract class GwtJavaClient implements Runnable
             }
 
         });
-        context.execute(this);
+        context.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                onModuleLoad();
+            }
+
+        });
     }
 
     public void await() throws InterruptedException

@@ -47,7 +47,7 @@ public class CookieTest
         new TestGwtJavaClient()
         {
             @Override
-            public void run()
+            public void onModuleLoad()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 LinkedList<Cookie> cookies = new LinkedList<Cookie>();

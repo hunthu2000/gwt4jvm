@@ -120,7 +120,7 @@ public class Context
     }
 
     /**
-     * {@link Deprecated} Modify <tt>Set</tt> returned by {@link #getCookies() getCookies} method instead.
+     * @deprecated Modify <tt>Set</tt> returned by {@link #getCookies() getCookies} method instead.
     */
     @Deprecated
     public void addCookies(Set<Cookie> cookies)
