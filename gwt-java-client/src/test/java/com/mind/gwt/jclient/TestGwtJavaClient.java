@@ -27,7 +27,7 @@ import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public abstract class TestGwtJavaClient extends GwtJavaClient
 {
-    private static final int JETTY_PORT = Integer.getInteger("gwt.java.client.test.port", 8080);
+    private static final int JETTY_PORT = Integer.getInteger("gwtJavaClient.jettyPort", 8080);
 
     private static final String MODULE_BASE_URL = "http://localhost:" + JETTY_PORT + "/test/";
 

@@ -78,7 +78,7 @@
                         </goals>
                         <configuration>
                             <portNames>
-                                <portName>gwt.java.client.test.port</portName>
+                                <portName>gwtJavaClient.jettyPort</portName>
                             </portNames>
                         </configuration>
                     </execution>
@@ -90,7 +90,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                      <systemPropertyVariables>
-                        <gwt.java.client.test.port>${gwt.java.client.test.port}</gwt.java.client.test.port>
+                        <gwtJavaClient.jettyPort>${gwtJavaClient.jettyPort}</gwtJavaClient.jettyPort>
                      </systemPropertyVariables>
                 </configuration>
             </plugin>
