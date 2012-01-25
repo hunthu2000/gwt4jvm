@@ -45,7 +45,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
 {
     private static final ChannelService channelService = new ChannelService();
     private static final CookieDecoder cookieDecoder = new CookieDecoder();
- 
+
     private final Context context = Context.getCurrentContext();
     private final ResponseText responseText = new ResponseText();
 
@@ -55,7 +55,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     private int status;
 
     private ReadyStateChangeHandler handler;
-    
+
     public XMLHttpRequestImpl()
     {
         snapshot = new XMLHttpRequestSnapshot(UNSENT, 0, "");
@@ -64,7 +64,12 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     @Override
     public void abort()
     {
-        channelService.releaseChannel(channel, true);  
+        channelService.releaseChannel(channel, true);
+        // This is a dirty hack to cancel any network activity, so
+        // no ready state change events will be fired... even DONE
+        // that according to specification has to be fired in some
+        // cases...
+        clearOnReadyStateChange();    
     }
 
     @Override
@@ -249,14 +254,14 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
 
     private void fireOnReadyStateChange(final XMLHttpRequestSnapshot snapshot, final boolean closeChannel)
     {
-        if (this.handler != null)
+        context.execute(new Runnable()
         {
-            context.execute(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                // We are piggybacking on `context` synchronization here. 
+                if (handler != null)
                 {
-                    // We are piggybacking on `context` synchronization here. 
                     XMLHttpRequestImpl.this.snapshot = snapshot;
                     handler.onReadyStateChange(snapshot);
                     if (snapshot.getReadyState() == DONE && channel != null)
@@ -264,7 +269,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
                         channelService.releaseChannel(channel, closeChannel);
                     }
                 }
-            });
-        }
+            }
+        });
     }
 }
