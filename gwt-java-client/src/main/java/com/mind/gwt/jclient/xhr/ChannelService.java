@@ -22,6 +22,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
@@ -39,14 +40,11 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.http.HttpClientCodec;
 import org.jboss.netty.handler.codec.http.HttpContentDecompressor;
-import org.jboss.netty.handler.timeout.ReadTimeoutException;
-import org.jboss.netty.handler.timeout.ReadTimeoutHandler;
-import org.jboss.netty.handler.timeout.WriteTimeoutException;
-import org.jboss.netty.handler.timeout.WriteTimeoutHandler;
+import org.jboss.netty.handler.timeout.IdleStateHandler;
+import org.jboss.netty.handler.timeout.TimeoutException;
 import org.jboss.netty.util.HashedWheelTimer;
-import org.jboss.netty.util.Timer;
 
-// TODO 'channels' should became a Map<HOST+PORT, Queue<Channel>> 
+// TODO 'channels' should became a Map<HOST+PORT, Queue<Channel>>
 public class ChannelService
 {
     public interface ChannelMessageHandler
@@ -55,7 +53,7 @@ public class ChannelService
         public void onException(ExceptionEvent event, boolean closeChannel) throws Exception;
     }
 
-    private static final int CHANNEL_IO_TIMEOUT = 30;
+    private static final int NIO_TIMEOUT_SECONDS = Integer.getInteger("gwtJavaClient.nioTimeoutSeconds", 30);
 
     private final ClientBootstrap bootstrap;
 
@@ -63,23 +61,22 @@ public class ChannelService
     private final AtomicLong opennedChannels = new AtomicLong();
     private final Map<Channel, ChannelMessageHandler> handlers = new ConcurrentHashMap<Channel, ChannelMessageHandler>();
     private final ChannelGroup channelGroup = new DefaultChannelGroup();
-    private final Timer ioTimeoutTimer = new HashedWheelTimer(); // TODO this should be stopped manually by calling releaseExternalResources() or Timer.stop() when application shuts down...
 
+    // TODO There are a lot of resources allocated here that have to be released manually, but currently there is no way to do so...
     public ChannelService()
     {
         bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-        bootstrap.setOption("connectTimeoutMillis", CHANNEL_IO_TIMEOUT * 1000);
+        bootstrap.setOption("connectTimeoutMillis", TimeUnit.MILLISECONDS.convert(NIO_TIMEOUT_SECONDS, TimeUnit.SECONDS));
         bootstrap.setPipelineFactory(new ChannelPipelineFactory()
         {
             @Override
             public ChannelPipeline getPipeline() throws Exception
             {
                 ChannelPipeline pipeline = Channels.pipeline();
-                pipeline.addLast("0", new ReadTimeoutHandler(ioTimeoutTimer, CHANNEL_IO_TIMEOUT)); 
-                pipeline.addLast("1", new WriteTimeoutHandler(ioTimeoutTimer, CHANNEL_IO_TIMEOUT));
-                pipeline.addLast("2", new HttpClientCodec(4096, 8192, 1024));
-                pipeline.addLast("3", new HttpContentDecompressor());
-                pipeline.addLast("4", new SimpleChannelUpstreamHandler()
+                pipeline.addLast("0", new IdleStateHandler(new HashedWheelTimer(), 0, 0, NIO_TIMEOUT_SECONDS)); 
+                pipeline.addLast("1", new HttpClientCodec(4096, 8192, 1024));
+                pipeline.addLast("2", new HttpContentDecompressor());
+                pipeline.addLast("3", new SimpleChannelUpstreamHandler()
                 {
                     @Override
                     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception
@@ -97,7 +94,7 @@ public class ChannelService
                         ChannelMessageHandler handler = handlers.get(ctx.getChannel());
                         if (handler != null)
                         {
-                            handler.onException(event, event.getCause() instanceof ReadTimeoutException || event.getCause() instanceof WriteTimeoutException);
+                            handler.onException(event, event.getCause() instanceof TimeoutException);
                         }
                     }
 
