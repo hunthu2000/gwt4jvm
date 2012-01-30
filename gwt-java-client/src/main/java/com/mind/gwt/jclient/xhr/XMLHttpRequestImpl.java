@@ -150,7 +150,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
         }
         catch (URISyntaxException exception)
         {
-            throw new IllegalArgumentException("Invalid URL: " + url);
+            throw new IllegalArgumentException("Invalid URL: " + url, exception);
         }
     }
 
