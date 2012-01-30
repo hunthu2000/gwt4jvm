@@ -55,6 +55,8 @@ public class ChannelService
 
     private static final int NIO_TIMEOUT_SECONDS = Integer.getInteger("gwtJavaClient.nioTimeoutSeconds", 30);
 
+    private static final HashedWheelTimer hashedWheelTimer = new HashedWheelTimer(); 
+
     private final ClientBootstrap bootstrap;
 
     private final Queue<Channel> channels = new ConcurrentLinkedQueue<Channel>();
@@ -73,7 +75,7 @@ public class ChannelService
             public ChannelPipeline getPipeline() throws Exception
             {
                 ChannelPipeline pipeline = Channels.pipeline();
-                pipeline.addLast("0", new IdleStateHandler(new HashedWheelTimer(), 0, 0, NIO_TIMEOUT_SECONDS)); 
+                pipeline.addLast("0", new IdleStateHandler(hashedWheelTimer, 0, 0, NIO_TIMEOUT_SECONDS)); 
                 pipeline.addLast("1", new HttpClientCodec(4096, 8192, 1024));
                 pipeline.addLast("2", new HttpContentDecompressor());
                 pipeline.addLast("3", new SimpleChannelUpstreamHandler()
