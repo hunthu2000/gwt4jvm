@@ -49,6 +49,10 @@ public class GwtLoadTest implements GwtJavaClientListener
     */
     public GwtLoadTest(Class<? extends GwtJavaClient> clientClass, int maxConcurrentClients, int rampUpTime, int testDuration, TimeUnit timeUnit)
     {
+        if (maxConcurrentClients <= 0)
+        {
+            throw new IllegalArgumentException("The value of maxConcurrentClients has to be > 0!");
+        }
         this.clientClass = clientClass;
         this.maxConcurrentClients = maxConcurrentClients;
         this.rampUpTime = timeUnit.toMillis(rampUpTime);
@@ -63,11 +67,12 @@ public class GwtLoadTest implements GwtJavaClientListener
     public void start() throws InstantiationException, IllegalAccessException, InterruptedException
     {
         testStartTime = System.currentTimeMillis();
-        while (getTimeElapsedSinceStart() <= rampUpTime)
+        while (concurrentClients.get() < maxConcurrentClients)
         {
-            while (!isTimeExpired() && concurrentClients.get() < getEstimatedConcurrentClients())
+            while (concurrentClients.get() < getEstimatedConcurrentClients())
             {
                 startClient();
+                concurrentClients.incrementAndGet();
             }
             Thread.sleep(1);
         }
@@ -77,22 +82,23 @@ public class GwtLoadTest implements GwtJavaClientListener
     @Override
     public void onFinish(GwtJavaClient client)
     {
-        concurrentClients.decrementAndGet();
-        if (!isTimeExpired())
+        if (isTimeExpired())
+        {
+            if (concurrentClients.decrementAndGet() == 0)
+            {
+                finishLatch.countDown();
+            }
+        }
+        else 
         {
             startClient();
-        }
-        if (concurrentClients.get() == 0)
-        {
-            finishLatch.countDown();
-        }
+        } 
     }
 
     private void startClient()
     {
         try
         {
-            concurrentClients.incrementAndGet();
             GwtJavaClient client = clientClass.newInstance();
             client.addListener(this);
             client.start();
