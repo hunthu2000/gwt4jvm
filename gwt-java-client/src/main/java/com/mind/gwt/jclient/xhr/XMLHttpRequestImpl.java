@@ -135,10 +135,10 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
                 throw new IllegalArgumentException("Unsupported HTTP method: " + httpMethod);
             }
 
-            URI uri = new URI(url == null ? "null" : url); // TODO "null"?! wtf???
+            URI uri = new URI(url);
             if (uri.getPort() == -1)
             {
-                uri = new URI(uri.getScheme(), null, uri.getHost(), 80, uri.getPath(), null, uri.getFragment());
+                uri = new URI(uri.getScheme(), null, uri.getHost(), 80, uri.getPath(), uri.getQuery(), uri.getFragment());
             }
 
             channel = channelService.acquireChannel(uri, this); // this could be null, but that's all right, we will check it in `send` method 
