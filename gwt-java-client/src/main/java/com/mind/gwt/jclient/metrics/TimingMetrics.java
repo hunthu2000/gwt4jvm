@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mind Ltd.
+ * Copyright 2012 Mind Ltd.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,26 +15,34 @@
 */
 package com.mind.gwt.jclient.metrics;
 
-import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
-public class GwtRpcMetrics extends TimingMetrics<Method>
+public class TimingMetrics<T> implements Metrics
 {
-    private final boolean succeed;
+    private final T оbject;
+    private final long startTime;
+    private final long duration;
 
-    public GwtRpcMetrics(Method method, long startTime, long duration, boolean succeed)
+    public TimingMetrics(T оbject, long startTime, long duration)
     {
-        super(method, startTime, duration);
-        this.succeed = succeed;
+        this.оbject = оbject;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public Method getMethod()
+    public T getObject()
     {
-        return getObject();
+        return оbject;
     }
 
-    public boolean isSucceed()
+    public long getStartTime()
     {
-        return succeed;
+        return startTime;
+    }
+
+    public long getDuration(TimeUnit timeUnit)
+    {
+        return timeUnit.convert(duration, TimeUnit.MILLISECONDS);
     }
 
 }
