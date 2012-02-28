@@ -55,13 +55,9 @@ public class Context
             
         });
     }
-    
+
     public static Context getCurrentContext()
     {
-        if (currentContext.get() == null)
-        {
-            throw new IllegalStateException("There is no context!");
-        }
         return currentContext.get();
     }
 

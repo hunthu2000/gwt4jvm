@@ -115,12 +115,12 @@ public abstract class GwtJavaClient implements EntryPoint
         completeLatch.await();
     }
 
-    protected void success()
+    public void success()
     {
         finish(true);
     }
 
-    protected void failure()
+    public void failure()
     {
         finish(false);
     }
@@ -137,7 +137,7 @@ public abstract class GwtJavaClient implements EntryPoint
 
     public long getDuration(TimeUnit timeUnit)
     {
-        return timeUnit.convert(duration.get(),TimeUnit.MILLISECONDS);
+        return timeUnit.convert(duration.get(), TimeUnit.MILLISECONDS);
     }
 
     public boolean isFinished()
@@ -174,6 +174,11 @@ public abstract class GwtJavaClient implements EntryPoint
 
     private void finish(boolean succeed)
     {
+        // TODO Make it legal to run success and failure methods beyond the context, and convert this check to an assert.
+        if (Context.getCurrentContext() == null)
+        {
+            throw new IllegalStateException("This method can be called within context only!");
+        }
         if (!duration.compareAndSet(-1, System.currentTimeMillis() - startTime.get()))
         {
             throw new IllegalStateException(getClass().getSimpleName() + " has been already finished!");
