@@ -120,15 +120,6 @@ public class Context
     }
 
     /**
-     * @deprecated Modify <tt>Set</tt> returned by {@link #getCookies() getCookies} method instead.
-    */
-    @Deprecated
-    public void addCookies(Set<Cookie> cookies)
-    {
-        this.cookies.addAll(cookies);
-    }
-
-    /**
      * Returns a mutable but thread-safe <tt>Set</tt> of cookies associated with the current <tt>Context</tt>. The 
      * result <tt>Set</tt> is backed by {@link Map} and both of {@link Set#addAll(java.util.Collection) addAll} and
      * {@link Set#add(Object) add} methods not only add new cookies to the context but replace already contained. 
