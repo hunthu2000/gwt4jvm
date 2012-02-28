@@ -164,7 +164,7 @@ public abstract class GwtJavaClient implements EntryPoint
     @SuppressWarnings("unchecked")
     public <T extends Metrics> Collection<T> getMetrics(Class<T> type)
     {
-        return Collections.unmodifiableCollection((Collection<T>) metricsMap.get(type));
+        return (Collection<T>) (metricsMap.containsKey(type) ? Collections.unmodifiableCollection(metricsMap.get(type)) : Collections.emptyList()); 
     }
 
     public DeferredBindingFactory getDeferredBindingFactory()
