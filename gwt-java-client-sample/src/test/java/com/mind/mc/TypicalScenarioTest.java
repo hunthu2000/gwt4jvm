@@ -38,14 +38,13 @@ public class TypicalScenarioTest extends GwtJavaClient
     private static final int RAMP_UP_SECONDS = Integer.getInteger("rampUpSeconds", 10);
     private static final int TEST_DURATION_SECONDS = Integer.getInteger("testDurationSeconds", 30);
 
-    @Override
-    public String getModuleBaseURL()
-    {       
-        return MODULE_BASE_URL;
+    public TypicalScenarioTest()
+    {
+        super(MODULE_BASE_URL);
     }
 
     @Override
-    public void onModuleLoad()
+    public void run()
     {
         final ServiceAsync service = GWT.create(Service.class);
         service.login("login", "password", new SimpleAsyncCallback<Void>()

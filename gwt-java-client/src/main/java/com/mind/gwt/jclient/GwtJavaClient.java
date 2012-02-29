@@ -28,36 +28,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.mind.gwt.jclient.context.Context;
 import com.mind.gwt.jclient.metrics.Metrics;
 
 /**
- * <tt>GwtJavaClient</tt> is an implementation of {@link EntryPoint} whose {@link #onModuleLoad() onModuleLoad} method
- * can be {@link #start() executed} inside the JVM in an environment that provides a pure Java implementation of a few
- * native objects of GWT SDK. Here is the complete list of them:
- *
- * <ul>
- *   <li>{@link com.google.gwt.xhr.client.XMLHttpRequest}
- *   <li>{@link com.google.gwt.core.client.GWT}
- *   <li>{@link com.google.gwt.user.client.Window}
- *   <li>{@link com.google.gwt.user.client.Cookies}
- *   <li>{@link com.google.gwt.user.client.Timer}
- * </ul>
- *
- * <p>There is a special support of GWT-RPC services. They can be used in exactly the same way as they always were. But
- * that's all. There is no support of GUI or any other custom JSNI. This means that <tt>GwtJavaClient</tt> doesn't open
- * the door to launch the entire GWT-applications inside the JVM.
- *
- * <p>Any instance of <tt>GwtJavaClient</tt> is disposable (i.e. it could be {@link #start() executed} only once), but
- * it is possible to create as many instances as needed and make them all working concurrently. Each instance will have
- * its own isolated environment. This feature in conjunction with {@link GwtLoadTest} simplifies the task of performing
- * load testing of GWT-RPC-based applications.
+ * <tt>GwtJavaClient</tt> is a browser-like (isolated single-threaded asynchronous) environment that in conjunction
+ * with a pure Java implementation of a lot of native components of GWT SDK opens the door to launch GWT-applications
+ * inside the Java Virtual Machine.
  * 
+ * <p>Must be understood that <tt>GwtJavaClient</tt> doesn't support JavaScript (JSNI) and there is no DOM-emulation.
+ * This means that to launch any GWT-application this way it has to contain no GUI and other custom JSNI code. With a
+ * help of <a href="http://code.google.com/webtoolkit/doc/latest/DevGuideMvpActivitiesAndPlaces.html">MVP-pattern</a>
+ * and wise use of dependency injection that shouldn't be to hard.
+ * 
+ * <p>There is a special support of GWT-RPC services, and they can be used in exactly the same way as they always were.
+ * This feature in conjunction with {@link GwtLoadTest} simplifies the task of performing load testing of GWT-RPC-based
+ * applications.
+ *
  * @see GwtLoadTest
 */
-public abstract class GwtJavaClient implements EntryPoint
+public abstract class GwtJavaClient implements Runnable
 {
     private final Set<GwtJavaClientListener> listeners = new CopyOnWriteArraySet<GwtJavaClientListener>();
     private final ConcurrentMap<Class<? extends Metrics>, Collection<Metrics>> metricsMap = new ConcurrentHashMap<Class<? extends Metrics>, Collection<Metrics>>();
@@ -65,23 +56,30 @@ public abstract class GwtJavaClient implements EntryPoint
     private final AtomicLong duration = new AtomicLong(-1);
     private final AtomicBoolean succeed = new AtomicBoolean();
     private final CountDownLatch completeLatch = new CountDownLatch(1);
-    private final AtomicReference<Throwable> uncaughtException = new AtomicReference<Throwable>(); 
+    private final AtomicReference<Throwable> uncaughtException = new AtomicReference<Throwable>();
 
-    public abstract String getModuleBaseURL();
+    private final String moduleBaseURL;
 
     /**
-     * @deprecated Use {@link #onModuleLoad() onModuleLoad} method instead.  
+     * @deprecated Use {@link #GwtJavaClient(String)} instead.  
     */
     @Deprecated
-    public void run() {}
-
-    public void onModuleLoad()
+    public GwtJavaClient()
     {
-        run();
+        moduleBaseURL = null;
+    }
+
+    public GwtJavaClient(String moduleBaseURL)
+    {
+        if (moduleBaseURL == null)
+        {
+            throw new IllegalArgumentException("moduleBaseURL can't be null!");
+        }
+        this.moduleBaseURL = moduleBaseURL;
     }
 
     /**
-     * Starts executing {@link #onModuleLoad() onModuleLoad} method in a newly created <tt>Context</tt>. 
+     * Starts executing specified <tt>run</tt> method in a newly created <tt>Context</tt>. 
     */
     public void start()
     {
@@ -99,15 +97,7 @@ public abstract class GwtJavaClient implements EntryPoint
             }
 
         });
-        context.execute(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                onModuleLoad();
-            }
-
-        });
+        context.execute(this);
     }
 
     public void await() throws InterruptedException
@@ -170,6 +160,17 @@ public abstract class GwtJavaClient implements EntryPoint
     public DeferredBindingFactory getDeferredBindingFactory()
     {
         return DeferredBindingFactory.getDeferredBindingFactory();
+    }
+
+    // TODO This method should became final...
+    public String getModuleBaseURL()
+    {
+        // TODO Keep this check till the default constructor isn't disappeared.
+        if (moduleBaseURL == null)
+        {
+            throw new IllegalStateException("Module base URL should have been specifed through constructor's argument!");
+        }
+        return moduleBaseURL;
     }
 
     private void finish(boolean succeed)

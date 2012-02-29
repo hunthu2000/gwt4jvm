@@ -25,13 +25,18 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.test.server.ServiceImpl;
 
-public abstract class TestGwtJavaClient extends GwtJavaClient
+public abstract class TestGwtJavaClient extends GwtJavaClient implements Runnable
 {
     private static final int JETTY_PORT = Integer.getInteger("gwtJavaClient.jettyPort", 8080);
 
     private static final String MODULE_BASE_URL = "http://localhost:" + JETTY_PORT + "/test/";
 
     private static Server jetty;
+
+    public TestGwtJavaClient()
+    {
+        super(MODULE_BASE_URL);
+    }
 
     public static void startJetty() throws Exception
     {
@@ -50,12 +55,6 @@ public abstract class TestGwtJavaClient extends GwtJavaClient
         jetty.join();
     }
 
-    @Override
-    public String getModuleBaseURL()
-    {
-        return MODULE_BASE_URL;
-    }
-
     public void execute() throws InterruptedException
     {
         start();
@@ -63,6 +62,7 @@ public abstract class TestGwtJavaClient extends GwtJavaClient
         if (getUncaughtException() != null)
         {
             getUncaughtException().printStackTrace();
+            Assert.fail();
         }
         Assert.assertTrue(isSucceed());
     }

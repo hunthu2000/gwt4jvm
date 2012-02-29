@@ -49,7 +49,7 @@ public class GwtRpcTest
         new TestGwtJavaClient()
         {
             @Override
-            public void onModuleLoad()
+            public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 service.putMaxPrimitiveWrappers(PrimitiveWrappers.createMaxValue(), new SimpleAsyncCallback<Void>()
@@ -84,7 +84,7 @@ public class GwtRpcTest
         new TestGwtJavaClient()
         {
             @Override
-            public void onModuleLoad()
+            public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 service.putMaxPrimitives(Primitives.createMaxValue(), new SimpleAsyncCallback<Void>()
@@ -119,7 +119,7 @@ public class GwtRpcTest
         new TestGwtJavaClient()
         {
             @Override
-            public void onModuleLoad()
+            public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 service.putExtendedPrimitives(ExtendedPrimitives.createClientToServerObject(), new SimpleAsyncCallback<Void>()
@@ -154,7 +154,7 @@ public class GwtRpcTest
         new TestGwtJavaClient()
         {
             @Override
-            public void onModuleLoad()
+            public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 service.putWithStaticNestedClass(WithStaticNestedClass.createClientToServerObject(), new SimpleAsyncCallback<Void>()
@@ -189,7 +189,7 @@ public class GwtRpcTest
         new TestGwtJavaClient()
         {
             @Override
-            public void onModuleLoad()
+            public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 service.putExtendedCollection(ExtendedCollection.createClientToServerObject(), new SimpleAsyncCallback<Void>()
@@ -224,7 +224,7 @@ public class GwtRpcTest
         new TestGwtJavaClient()
         {
             @Override
-            public void onModuleLoad()
+            public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
                 service.putAggregatedEnumeration(AggregatedEnumeration.createClientToServerObject(), new SimpleAsyncCallback<Void>()
