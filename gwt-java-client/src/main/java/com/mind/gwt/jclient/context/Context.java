@@ -34,6 +34,11 @@ public class Context
 {
     private static final ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
 
+    static
+    {
+        EventRepository.instantiateLazyEventTypes();
+    }
+
     private final GwtJavaClient client;
     private final UncaughtExceptionHandler uncaughtExceptionHandler;
     private final ExecutorService executorService = ExecutorServiceFactory.getExecutorService(this);
