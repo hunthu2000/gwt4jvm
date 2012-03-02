@@ -36,19 +36,26 @@ public class DeferredBindingFactory
     @SuppressWarnings("unchecked")
     public <T> T create(final Class<?> c) throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
-        Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
-        return (T) Proxy.newProxyInstance(asyncServiceClass.getClassLoader(), new Class[] {asyncServiceClass}, new InvocationHandler()
+        try
         {
-            private final T asyncServiceProxy  = (T) Class.forName(c.getName() + "_Proxy").newInstance();
-
-            @Override
-            @SuppressWarnings("rawtypes")
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+            Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
+            return (T) Proxy.newProxyInstance(asyncServiceClass.getClassLoader(), new Class[] {asyncServiceClass}, new InvocationHandler()
             {
-                args[args.length - 1] = new MeasurableAsyncCallback(method, (AsyncCallback<?>) args[args.length - 1]);
-                return method.invoke(asyncServiceProxy, args);
-            }
-        });
+                private final T asyncServiceProxy  = (T) Class.forName(c.getName() + "_Proxy").newInstance();
+
+                @Override
+                @SuppressWarnings("rawtypes")
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+                {
+                    args[args.length - 1] = new MeasurableAsyncCallback(method, (AsyncCallback<?>) args[args.length - 1]);
+                    return method.invoke(asyncServiceProxy, args);
+                }
+            });
+        }
+        catch (ClassNotFoundException exception)
+        {
+            return (T) c.newInstance();
+        }
     }
 
 }
