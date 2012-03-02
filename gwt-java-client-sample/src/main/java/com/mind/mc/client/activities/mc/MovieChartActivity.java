@@ -13,22 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.mind.mc.client;
+package com.mind.mc.client.activities.mc;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-public class MovieChart extends Composite
+public class MovieChartActivity extends AbstractActivity
 {
-    interface Ui extends UiBinder<Widget, MovieChart> {}
+    public final MovieChartView view = GWT.create(MovieChartViewImpl.class); 
 
-    private static Ui ui = GWT.create(Ui.class);
-
-    public MovieChart()
+    @Override
+    public void start(AcceptsOneWidget display, EventBus eventBus)
     {
-        initWidget(ui.createAndBindUi(this));
+        view.setDisplay(display);
     }
 
 }

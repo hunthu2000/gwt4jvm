@@ -13,21 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.mind.mc.client;
+package com.mind.mc.client.places;
 
-import java.util.ArrayList;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.place.shared.WithTokenizers;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.mc.dto.MovieDTO;
-
-public interface ServiceAsync
-{
-    void login(String username, String password, AsyncCallback<Void> callback);
-
-    void getMovieList(AsyncCallback<ArrayList<MovieDTO>> callback);
-
-    void rateMovie(long movieId, byte rate, AsyncCallback<Void> callback);
-
-    void logout(AsyncCallback<Void> callback);
-
-}
+@WithTokenizers({LoginPlace.Tokenizer.class, MovieChartPlace.Tokenizer.class})
+public interface MovieChartHistoryMapper extends PlaceHistoryMapper {}

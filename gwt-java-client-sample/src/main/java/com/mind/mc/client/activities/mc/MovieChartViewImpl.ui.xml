@@ -3,7 +3,7 @@
 
     <ui:style>
 
-        .message {
+        .view {
             width:      350px;
             margin:     100px auto 0;
             text-align: center;
@@ -12,8 +12,8 @@
 
     </ui:style>
 
-    <g:HTMLPanel styleName="{style.message}">
+    <g:HTMLPanel styleName="{style.view}">
         Movie Chart isn't complete web-application and it doesn't have GUI. Its purpose is just to show how to write load tests using GWT Java Client.
     </g:HTMLPanel>
 
-</ui:UiBinder> 
+</ui:UiBinder>

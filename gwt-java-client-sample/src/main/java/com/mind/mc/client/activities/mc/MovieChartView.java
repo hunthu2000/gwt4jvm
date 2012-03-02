@@ -13,21 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.mind.mc.client;
+package com.mind.mc.client.activities.mc;
 
-import java.util.ArrayList;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.mc.dto.MovieDTO;
-
-public interface ServiceAsync
+public interface MovieChartView
 {
-    void login(String username, String password, AsyncCallback<Void> callback);
-
-    void getMovieList(AsyncCallback<ArrayList<MovieDTO>> callback);
-
-    void rateMovie(long movieId, byte rate, AsyncCallback<Void> callback);
-
-    void logout(AsyncCallback<Void> callback);
+    void setDisplay(AcceptsOneWidget display);
 
 }

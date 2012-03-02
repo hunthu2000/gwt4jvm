@@ -47,7 +47,7 @@ public class TypicalScenarioTest extends GwtJavaClient
     public void run()
     {
         final ServiceAsync service = GWT.create(Service.class);
-        service.login("login", "password", new SimpleAsyncCallback<Void>()
+        service.login("username", "password", new SimpleAsyncCallback<Void>()
         {            
             @Override
             public void onSuccess(Void result)

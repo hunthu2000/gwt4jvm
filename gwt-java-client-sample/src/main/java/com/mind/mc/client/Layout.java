@@ -15,19 +15,11 @@
 */
 package com.mind.mc.client;
 
-import java.util.ArrayList;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.mc.dto.MovieDTO;
-
-public interface ServiceAsync
+public interface Layout
 {
-    void login(String username, String password, AsyncCallback<Void> callback);
+    public void attach();
 
-    void getMovieList(AsyncCallback<ArrayList<MovieDTO>> callback);
-
-    void rateMovie(long movieId, byte rate, AsyncCallback<Void> callback);
-
-    void logout(AsyncCallback<Void> callback);
-
+    public AcceptsOneWidget getDisplay();
 }

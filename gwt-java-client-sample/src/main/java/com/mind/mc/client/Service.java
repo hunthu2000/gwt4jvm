@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @RemoteServiceRelativePath("service")
 public interface Service extends RemoteService
 {
-    public void login(String login, String password);
+    public void login(String username, String password);
 
     public ArrayList<MovieDTO> getMovieList();
 

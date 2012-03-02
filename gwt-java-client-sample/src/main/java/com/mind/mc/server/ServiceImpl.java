@@ -28,9 +28,9 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
     private static final ArrayList<MovieDTO> movies = new ArrayList<MovieDTO>(Arrays.asList(MovieDTO.createRandom(), MovieDTO.createRandom(), MovieDTO.createRandom()));  
 
     @Override
-    public void login(String login, String password)
+    public void login(String username, String password)
     {
-        // any login/password will do
+        // any username/password will do
     }
 
     @Override

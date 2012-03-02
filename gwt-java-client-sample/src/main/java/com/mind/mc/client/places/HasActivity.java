@@ -13,21 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
 */
-package com.mind.mc.client;
+package com.mind.mc.client.places;
 
-import java.util.ArrayList;
+import com.google.gwt.activity.shared.Activity;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.mind.mc.dto.MovieDTO;
-
-public interface ServiceAsync
+public interface HasActivity
 {
-    void login(String username, String password, AsyncCallback<Void> callback);
-
-    void getMovieList(AsyncCallback<ArrayList<MovieDTO>> callback);
-
-    void rateMovie(long movieId, byte rate, AsyncCallback<Void> callback);
-
-    void logout(AsyncCallback<Void> callback);
-
+    public Activity getActivity(Place place, PlaceController placeController);
 }

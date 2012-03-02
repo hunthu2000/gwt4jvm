@@ -3,6 +3,7 @@
 <module rename-to="mc">
 
     <inherits name="com.google.gwt.user.User"/>
+    <inherits name="com.google.gwt.activity.Activity"/>
 
     <entry-point class="com.mind.mc.client.MovieChartEntryPoint"/>
 
