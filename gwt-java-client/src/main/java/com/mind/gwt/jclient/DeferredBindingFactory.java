@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.metrics.MeasurableAsyncCallback;
 
@@ -36,6 +37,10 @@ public class DeferredBindingFactory
     @SuppressWarnings("unchecked")
     public <T> T create(final Class<?> c) throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
+        if (PlaceHistoryMapper.class.isAssignableFrom(c))
+        {
+            return (T) Class.forName(c.getName() +  "Impl").newInstance();
+        }
         try
         {
             Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
