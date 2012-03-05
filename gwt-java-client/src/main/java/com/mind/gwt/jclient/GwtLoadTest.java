@@ -174,14 +174,8 @@ public class GwtLoadTest implements GwtJavaClientListener
         boolean needWrapping = moduleBaseURL != null;
         if (needWrapping)
         {
-            return new GwtJavaClient(moduleBaseURL)
+            return new GwtJavaClient(moduleBaseURL, deferredBindingFactory)
             {
-                @Override
-                public DeferredBindingFactory getDeferredBindingFactory()
-                {
-                    return deferredBindingFactory;
-                }
-
                 @Override
                 public void run()
                 {

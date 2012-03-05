@@ -59,6 +59,7 @@ public abstract class GwtJavaClient implements Runnable
     private final AtomicReference<Throwable> uncaughtException = new AtomicReference<Throwable>();
 
     private final String moduleBaseURL;
+    private final DeferredBindingFactory deferredBindingFactory;
 
     /**
      * @deprecated Use {@link #GwtJavaClient(String)} instead.  
@@ -67,15 +68,26 @@ public abstract class GwtJavaClient implements Runnable
     public GwtJavaClient()
     {
         moduleBaseURL = null;
+        deferredBindingFactory = DeferredBindingFactory.getDeferredBindingFactory();
     }
 
     public GwtJavaClient(String moduleBaseURL)
+    {
+        this(moduleBaseURL, DeferredBindingFactory.getDeferredBindingFactory());
+    }
+
+    public GwtJavaClient(String moduleBaseURL, DeferredBindingFactory deferredBindingFactory)
     {
         if (moduleBaseURL == null)
         {
             throw new IllegalArgumentException("moduleBaseURL can't be null!");
         }
+        if (deferredBindingFactory == null)
+        {
+            throw new IllegalArgumentException("deferredBindingFactory can't be null!");
+        }
         this.moduleBaseURL = moduleBaseURL;
+        this.deferredBindingFactory = deferredBindingFactory;
     }
 
     /**
@@ -157,9 +169,10 @@ public abstract class GwtJavaClient implements Runnable
         return (Collection<T>) (metricsMap.containsKey(type) ? Collections.unmodifiableCollection(metricsMap.get(type)) : Collections.emptyList()); 
     }
 
+    // TODO This method should became final...
     public DeferredBindingFactory getDeferredBindingFactory()
     {
-        return DeferredBindingFactory.getDeferredBindingFactory();
+        return deferredBindingFactory;
     }
 
     // TODO This method should became final...
