@@ -100,7 +100,7 @@ public class TypicalScenarioTest extends GwtJavaClient
     {
         final AtomicLong succeed = new AtomicLong();
         final AtomicLong failure = new AtomicLong();
-        GwtLoadTest gwtLoadTest = new GwtLoadTest(getClass(), CONCURRENT_USERS, RAMP_UP_SECONDS, TEST_DURATION_SECONDS, TimeUnit.SECONDS)
+        GwtLoadTest gwtLoadTest = new GwtLoadTest(getClass())
         {
             @Override
             public void onFinish(GwtJavaClient client)
@@ -117,7 +117,7 @@ public class TypicalScenarioTest extends GwtJavaClient
                 super.onFinish(client);
             }
         };
-        gwtLoadTest.start();
+        gwtLoadTest.start(CONCURRENT_USERS, RAMP_UP_SECONDS, TEST_DURATION_SECONDS, TimeUnit.SECONDS);
         Assert.assertTrue(true);
     }
 

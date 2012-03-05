@@ -19,21 +19,59 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.gwt.core.client.EntryPoint;
 import com.mind.gwt.jclient.GwtJavaClient;
 
 //TODO add clients per second (tests per second) metric...
 public class GwtLoadTest implements GwtJavaClientListener
 {
-    private final Class<? extends GwtJavaClient> clientClass;
-    private final int maxConcurrentClients;
-    private final long rampUpTime;
-    private final long testDuration;
+    private final Class<?> clientClass;
+    private final String moduleBaseURL;
+    private final DeferredBindingFactory deferredBindingFactory;
     private final CountDownLatch finishLatch = new CountDownLatch(1); 
     private final AtomicLong concurrentClients = new AtomicLong();
 
-    private volatile long testStartTime;
+    // The only write to fields below is guaranteed to happen-before they are read: we are piggybacking on synchronization provided by start method of GwtJavaClient.  
+    private int maxConcurrentClients;
+    private long rampUpTime;
+    private long testDuration;
+    private long testStartTime;
 
     /**
+     * Constructs <tt>GwtLoadTest</tt> that will be {@link #start(int, long, long, TimeUnit) operating on} instances of
+     * specified {@link GwtJavaClient} implementation.
+    */
+    @SuppressWarnings("unchecked")
+    public GwtLoadTest(Class<? extends GwtJavaClient> clientClass)
+    {
+        this((Class<? extends EntryPoint>) clientClass, null, null);
+    }
+
+    /**
+     * Constructs <tt>GwtLoadTest</tt> that will be {@link #start(int, long, long, TimeUnit) operating on} instances of
+     * the specified {@link EntryPoint} implementation, each wrapped in separate instance of {@link GwtJavaClient} with
+     * the specified module base URL and default {@link DeferredBindingFactory}.
+    */
+    public GwtLoadTest(Class<? extends EntryPoint> entryPointClass, String moduleBaseURL)
+    {
+        this(entryPointClass, moduleBaseURL, DeferredBindingFactory.getDeferredBindingFactory());
+    }
+
+    /**
+     * Constructs <tt>GwtLoadTest</tt> that will be {@link #start(int, long, long, TimeUnit) operating on} instances of
+     * the specified {@link EntryPoint} implementation, each wrapped in separate instance of {@link GwtJavaClient} with
+     * specified module base URL and deferred binding factory.
+    */
+    public GwtLoadTest(Class<? extends EntryPoint> entryPointClass, String moduleBaseURL, DeferredBindingFactory deferredBindingFactory)
+    {
+        this.clientClass = entryPointClass;
+        this.moduleBaseURL = moduleBaseURL;
+        this.deferredBindingFactory = deferredBindingFactory;
+    }
+
+    /**
+     * @deprecated Use {@link #GwtLoadTest(Class)} instead.
+     * 
      * Constructs a new <code>GwtLoadTest</code> that will execute concurrently up to specified number of the specified
      * implementation of {@link GwtJavaClient}. The maximum load will be reached within specified ramp up time and will
      * be lasting specified time. All times are in specified time units.
@@ -47,13 +85,10 @@ public class GwtLoadTest implements GwtJavaClientListener
      * @param testDuration - test duration;
      * @param timeUnit - what unit <code>rampUpTime</code> and <code>testDuration</code> should interpreted at. 
     */
+    @Deprecated
     public GwtLoadTest(Class<? extends GwtJavaClient> clientClass, int maxConcurrentClients, int rampUpTime, int testDuration, TimeUnit timeUnit)
     {
-        if (maxConcurrentClients <= 0)
-        {
-            throw new IllegalArgumentException("The value of maxConcurrentClients has to be > 0!");
-        }
-        this.clientClass = clientClass;
+        this(clientClass);
         this.maxConcurrentClients = maxConcurrentClients;
         this.rampUpTime = timeUnit.toMillis(rampUpTime);
         this.testDuration = timeUnit.toMillis(testDuration);
@@ -64,9 +99,34 @@ public class GwtLoadTest implements GwtJavaClientListener
         return concurrentClients.get();
     }
 
+    /**
+     * @deprecated. Use {@link #start(int, int, int, TimeUnit)} instead.
+    */
+    @Deprecated
     public void start() throws InstantiationException, IllegalAccessException, InterruptedException
     {
-        testStartTime = System.currentTimeMillis();
+        start(maxConcurrentClients, rampUpTime, testDuration, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Start load test that will maintain up to specified number of concurrently working clients. The maximum load will
+     * be reached within specified ramp up time and will last specified time. All times are in specified time units.
+     * 
+     * @param maxConcurrentClients - maximum number of concurrently executed instances of <code>clientClasses</code>;
+     * @param rampUpTime - ramp up time;
+     * @param testDuration - test duration;
+     * @param timeUnit - what unit <code>rampUpTime</code> and <code>testDuration</code> should interpreted at. 
+    */
+    public void start(int maxConcurrentClients, long rampUpTime, long testDuration, TimeUnit timeUnit) throws InstantiationException, IllegalAccessException, InterruptedException
+    {
+        if (maxConcurrentClients <= 0)
+        {
+            throw new IllegalArgumentException("The value of maxConcurrentClients has to be > 0!");
+        }
+        this.maxConcurrentClients = maxConcurrentClients;
+        this.rampUpTime = timeUnit.toMillis(rampUpTime);
+        this.testDuration = timeUnit.toMillis(testDuration);
+        this.testStartTime = System.currentTimeMillis();
         while (concurrentClients.get() < maxConcurrentClients)
         {
             while (concurrentClients.get() < getEstimatedConcurrentClients())
@@ -99,13 +159,46 @@ public class GwtLoadTest implements GwtJavaClientListener
     {
         try
         {
-            GwtJavaClient client = clientClass.newInstance();
+            GwtJavaClient client = createClient();
             client.addListener(this);
             client.start();
         }
         catch (Exception exception)
         {
             throw new RuntimeException(clientClass.getSimpleName() + " instance can't be created", exception);
+        }
+    }
+
+    private GwtJavaClient createClient() throws InstantiationException, IllegalAccessException
+    {
+        boolean needWrapping = moduleBaseURL != null;
+        if (needWrapping)
+        {
+            return new GwtJavaClient(moduleBaseURL)
+            {
+                @Override
+                public DeferredBindingFactory getDeferredBindingFactory()
+                {
+                    return deferredBindingFactory;
+                }
+
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        ((EntryPoint) clientClass.newInstance()).onModuleLoad();
+                    }
+                    catch (Exception exception)
+                    {
+                        throw new RuntimeException(clientClass.getSimpleName() + " instance can't be created", exception);
+                    }
+                }
+            };
+        }
+        else
+        {
+            return (GwtJavaClient) clientClass.newInstance();
         }
     }
 
