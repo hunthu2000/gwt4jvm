@@ -29,7 +29,7 @@ import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
-public class GwtRpcTest
+public class GwtRpcSerializationTest
 {
     @BeforeClass
     public static void setUp() throws Exception
