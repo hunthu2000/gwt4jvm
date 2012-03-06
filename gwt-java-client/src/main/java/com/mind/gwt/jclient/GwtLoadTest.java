@@ -23,8 +23,28 @@ import com.google.gwt.core.client.EntryPoint;
 import com.mind.gwt.jclient.GwtJavaClient;
 
 //TODO add clients per second (tests per second) metric...
-public class GwtLoadTest implements GwtJavaClientListener
+public class GwtLoadTest
 {
+    private final GwtJavaClientListener listener = new GwtJavaClientListener()
+    {
+        @Override
+        public void onFinish(GwtJavaClient client)
+        {
+            GwtLoadTest.this.onFinish(client);
+            if (isTimeExpired())
+            {
+                if (concurrentClients.decrementAndGet() == 0)
+                {
+                    finishLatch.countDown();
+                }
+            }
+            else 
+            {
+                startClient();
+            } 
+        }
+    };
+
     private final Class<?> clientClass;
     private final String moduleBaseURL;
     private final DeferredBindingFactory deferredBindingFactory;
@@ -70,7 +90,7 @@ public class GwtLoadTest implements GwtJavaClientListener
     }
 
     /**
-     * @deprecated Use {@link #GwtLoadTest(Class)} instead.
+     * @deprecated Use {@link #GwtLoadTest(Class)} and {@link #start(int, long, long, TimeUnit)} instead.
      * 
      * Constructs a new <code>GwtLoadTest</code> that will execute concurrently up to specified number of the specified
      * implementation of {@link GwtJavaClient}. The maximum load will be reached within specified ramp up time and will
@@ -93,6 +113,8 @@ public class GwtLoadTest implements GwtJavaClientListener
         this.rampUpTime = timeUnit.toMillis(rampUpTime);
         this.testDuration = timeUnit.toMillis(testDuration);
     }
+
+    public void onFinish(GwtJavaClient client) {}
 
     public long getConcurrentClients()
     {
@@ -139,28 +161,12 @@ public class GwtLoadTest implements GwtJavaClientListener
         finishLatch.await();
     }
 
-    @Override
-    public void onFinish(GwtJavaClient client)
-    {
-        if (isTimeExpired())
-        {
-            if (concurrentClients.decrementAndGet() == 0)
-            {
-                finishLatch.countDown();
-            }
-        }
-        else 
-        {
-            startClient();
-        } 
-    }
-
     private void startClient()
     {
         try
         {
             GwtJavaClient client = createClient();
-            client.addListener(this);
+            client.addListener(listener);
             client.start();
         }
         catch (Exception exception)
