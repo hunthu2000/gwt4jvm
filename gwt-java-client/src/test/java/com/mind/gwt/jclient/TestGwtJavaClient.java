@@ -27,6 +27,15 @@ import com.mind.gwt.jclient.test.server.ServiceImpl;
 
 public abstract class TestGwtJavaClient extends GwtJavaClient implements Runnable
 {
+    protected abstract class SimpleAsyncCallback<T> implements AsyncCallback<T>
+    {
+        @Override
+        public void onFailure(Throwable caught)
+        {
+            failure();
+        }
+    }
+
     private static final int JETTY_PORT = Integer.getInteger("gwtJavaClient.jettyPort", 8080);
 
     private static final String MODULE_BASE_URL = "http://localhost:" + JETTY_PORT + "/test/";
@@ -65,15 +74,6 @@ public abstract class TestGwtJavaClient extends GwtJavaClient implements Runnabl
             Assert.fail();
         }
         Assert.assertTrue(isSucceed());
-    }
-
-    protected abstract class SimpleAsyncCallback<T> implements AsyncCallback<T>
-    {
-        @Override
-        public void onFailure(Throwable caught)
-        {
-            failure();
-        }
     }
 
 }
