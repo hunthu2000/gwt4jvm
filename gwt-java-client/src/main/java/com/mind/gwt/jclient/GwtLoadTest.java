@@ -31,6 +31,7 @@ public class GwtLoadTest
         public void onFinish(GwtJavaClient client)
         {
             GwtLoadTest.this.onFinish(client);
+            GwtLoadTest.this.onClientFinished(client);
             if (isTimeExpired())
             {
                 if (concurrentClients.decrementAndGet() == 0)
@@ -114,7 +115,27 @@ public class GwtLoadTest
         this.testDuration = timeUnit.toMillis(testDuration);
     }
 
+    /**
+     * @deprecated Use {@link #onClientFinished(GwtJavaClient)} instead.
+    */
+    @Deprecated
     public void onFinish(GwtJavaClient client) {}
+
+    /**
+     * Override this method to be notified when next <tt>GwtJavaClient</tt> is about to {@link GwtJavaClient#start()
+     * start} running.
+     * 
+     * @param client - instance of <tt>GwtJavaClient</tt> implementation that is about to start running.
+    */
+    public void onClientPrepared(GwtJavaClient client) {}
+
+    /**
+     * Override this method to be notified when <tt>GwtJavaClient</tt> is finished with {@link GwtJavaClient#success()
+     * success} or {@link GwtJavaClient#failure() failure}.
+     * 
+     * @param client - instance of <tt>GwtJavaClient</tt> implementation that has been finished.
+    */
+    public void onClientFinished(GwtJavaClient client) {}
 
     public long getConcurrentClients()
     {
@@ -167,6 +188,7 @@ public class GwtLoadTest
         {
             GwtJavaClient client = createClient();
             client.addListener(listener);
+            onClientPrepared(client);
             client.start();
         }
         catch (Exception exception)
