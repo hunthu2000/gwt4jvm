@@ -20,8 +20,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
@@ -29,6 +33,12 @@ import com.google.gwt.user.client.rpc.SerializationStreamWriter;
 
 public class ReflectiveTypeHandler implements TypeHandler
 {
+    private static final TypeHandler NO_TYPE_HANDLER = new ReflectiveTypeHandler(null);
+
+    private static final ConcurrentMap<Class<?>, TypeHandler> cachedTypeHandlers = new ConcurrentHashMap<Class<?>, TypeHandler>();
+
+    private static final ConcurrentMap<Class<?>, Field[]> cachedClassFields = new ConcurrentHashMap<Class<?>, Field[]>();
+
     private final Class<?> type; 
 
     public ReflectiveTypeHandler(Class<?> type)
@@ -41,8 +51,8 @@ public class ReflectiveTypeHandler implements TypeHandler
     {
         try
         {
-            TypeHandler typeHandler = getGeneratedTypeHandler(type);
-            if (typeHandler != null)
+            TypeHandler typeHandler = getTypeHandler(type);
+            if (typeHandler != NO_TYPE_HANDLER)
             {
                 return typeHandler.create(reader);
             }
@@ -64,30 +74,14 @@ public class ReflectiveTypeHandler implements TypeHandler
             Class<? extends Object> c = object.getClass();
             do
             {
-                TypeHandler typeHandler = getGeneratedTypeHandler(c);
-                if (typeHandler != null)
+                TypeHandler typeHandler = getTypeHandler(c);
+                if (typeHandler != NO_TYPE_HANDLER)
                 {
                     typeHandler.serial(writer, object);
                     return;
                 }
-                Field[] fields = c.getDeclaredFields();
-                Arrays.sort(fields, 0, fields.length, new Comparator<Field>()
+                for (Field field : getTypeFields(c))
                 {
-                    @Override
-                    public int compare(Field field1, Field field2)
-                    {
-                        return field1.getName().compareTo(field2.getName());
-                    }
-                });
-                for (Field field : fields)
-                {
-                    field.setAccessible(true);
-
-                    int fieldModifiers = field.getModifiers();
-                    if (Modifier.isStatic(fieldModifiers) || Modifier.isTransient(fieldModifiers))
-                    {
-                        continue;
-                    }
                     if (field.getType() == boolean.class)
                     {
                         writer.writeBoolean(field.getBoolean(object));
@@ -146,31 +140,14 @@ public class ReflectiveTypeHandler implements TypeHandler
             Class<? extends Object> c = object.getClass();
             do
             {
-                TypeHandler typeHandler = getGeneratedTypeHandler(c);
-                if (typeHandler != null)
+                TypeHandler typeHandler = getTypeHandler(c);
+                if (typeHandler != NO_TYPE_HANDLER)
                 {
                     typeHandler.deserial(reader, object);
                     return;
                 }
-                Field[] fields = c.getDeclaredFields();
-                Arrays.sort(fields, 0, fields.length, new Comparator<Field>()
+                for (Field field : getTypeFields(c))
                 {
-                    @Override
-                    public int compare(Field field1, Field field2)
-                    {
-                        return field1.getName().compareTo(field2.getName());
-                    }
-                });
-                for (Field field : fields)
-                {
-                    field.setAccessible(true);
-
-                    int fieldModifiers = field.getModifiers();
-                    if (Modifier.isStatic(fieldModifiers) || Modifier.isTransient(fieldModifiers))
-                    {
-                        continue;
-                    }
-
                     if (field.getType() == boolean.class)
                     {
                         field.setBoolean(object, reader.readBoolean());
@@ -221,22 +198,16 @@ public class ReflectiveTypeHandler implements TypeHandler
         }
     }
 
-    private TypeHandler getGeneratedTypeHandler(Class<?> c) throws SerializationException
+    private TypeHandler getTypeHandler(Class<?> c) throws SerializationException
     {
         try
         {
-            LinkedList<Class<TypeHandler>> typeHandlers = getTypeHandlers(c);
-            if (!c.isEnum())
+            if (!cachedTypeHandlers.containsKey(c))
             {
-                for (Class<TypeHandler> typeHandler : typeHandlers)
-                {
-                    if (hasNativeMethods(typeHandler))
-                    {
-                        return null;
-                    }
-                }
+                List<Class<TypeHandler>> typeHandlers = getTypeHandlerClasses(c);
+                cachedTypeHandlers.putIfAbsent(c, typeHandlers.isEmpty() ? NO_TYPE_HANDLER : typeHandlers.get(0).getDeclaredConstructor().newInstance());
             }
-            return typeHandlers.getFirst().getDeclaredConstructor().newInstance();
+            return cachedTypeHandlers.get(c);
         }
         catch (Exception exception)
         {
@@ -244,18 +215,24 @@ public class ReflectiveTypeHandler implements TypeHandler
         }
     }
 
-    private static LinkedList<Class<TypeHandler>> getTypeHandlers(Class<?> c)
+    @SuppressWarnings("unchecked")
+    private static List<Class<TypeHandler>> getTypeHandlerClasses(Class<?> c)
     {
         LinkedList<Class<TypeHandler>> typeHandlers = new LinkedList<Class<TypeHandler>>();
         do
         {
             try
             {
-                typeHandlers.add(getGeneratedTypeHandlerClass(c));
+                Class<TypeHandler> typeHandler = getGeneratedTypeHandlerClass(c);
+                if (!c.isEnum() && hasNativeMethods(typeHandler))
+                {
+                    return Collections.EMPTY_LIST;
+                }
+                typeHandlers.add(typeHandler);
             }
             catch (ClassNotFoundException exception)
             {
-                break; 
+                break;
             }
         }
         while ((c = c.getSuperclass()) != Object.class);
@@ -280,6 +257,35 @@ public class ReflectiveTypeHandler implements TypeHandler
             if (method.toString().contains(" native ")) return true; 
         }
         return false;
+    }
+
+    private static Field[] getTypeFields(Class<?> c)
+    {
+        if (!cachedClassFields.containsKey(c))
+        {
+            LinkedList<Field> fields = new LinkedList<Field>();  
+            for (Field field : c.getDeclaredFields())
+            {
+                field.setAccessible(true);
+
+                int fieldModifiers = field.getModifiers();
+                if (!Modifier.isStatic(fieldModifiers) && !Modifier.isTransient(fieldModifiers))
+                {
+                    fields.add(field);
+                }
+            }
+            Field[] result = fields.toArray(new Field[0]);
+            Arrays.sort(result, 0, result.length, new Comparator<Field>()
+            {
+                @Override
+                public int compare(Field field1, Field field2)
+                {
+                    return field1.getName().compareTo(field2.getName());
+                }
+            });
+            cachedClassFields.putIfAbsent(c, result);
+        }
+        return cachedClassFields.get(c);
     }
 
 }
