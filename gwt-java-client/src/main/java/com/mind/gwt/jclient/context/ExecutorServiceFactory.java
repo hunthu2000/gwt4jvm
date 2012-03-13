@@ -21,8 +21,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 class ExecutorServiceFactory
 {
-    private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-    private static final ExecutorService[] executors = new ExecutorService[Runtime.getRuntime().availableProcessors() * 2];
+    private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(Integer.getInteger("gwtJavaClient.scheduledExecutors", Runtime.getRuntime().availableProcessors() * 2));
+    private static final ExecutorService[] executors = new ExecutorService[Integer.getInteger("gwtJavaClient.executors", Runtime.getRuntime().availableProcessors() * 2)];
 
     static
     {
