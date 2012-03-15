@@ -63,7 +63,7 @@ public class ReflectionHelper
         if (TypeHandler.class.isAssignableFrom(classToInstantiate))
         {
             String type = classToInstantiate.getName().replaceFirst("_FieldSerializer$", "").replace('_', '$').replaceFirst("^com.google.gwt.user.client.rpc.core.java", "java");
-            return (T) new ReflectiveTypeHandler(Class.forName(type));
+            return (T) TypeHandlerFactory.getTypeHandler(Class.forName(type));
         }
         else
         {
