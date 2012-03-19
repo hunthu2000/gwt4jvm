@@ -19,6 +19,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -47,6 +50,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     private static final CookieDecoder cookieDecoder = new CookieDecoder();
 
     private final Context context = Context.getCurrentContext();
+    private final ConcurrentMap<String, String> responseHeaders = new ConcurrentHashMap<String, String>();
     private final ResponseText responseText = new ResponseText();
 
     private XMLHttpRequest snapshot;
@@ -81,7 +85,12 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     @Override
     public String getAllResponseHeaders()
     {
-        return snapshot.getAllResponseHeaders();
+        StringBuffer allResponseHeaders = new StringBuffer();
+        for (Entry<String, String> entry : responseHeaders.entrySet())
+        {
+            allResponseHeaders.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
+        }
+        return allResponseHeaders.toString();
     }
 
     @Override
@@ -93,7 +102,7 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
     @Override
     public String getResponseHeader(String header)
     {
-        return snapshot.getResponseHeader(header);
+        return responseHeaders.get(header);
     }
 
     @Override
@@ -210,6 +219,11 @@ public class XMLHttpRequestImpl extends XMLHttpRequest implements ChannelMessage
             }
 
             status = response.getStatus().getCode();
+
+            for (Entry<String, String> entry : response.getHeaders())
+            {
+                responseHeaders.put(entry.getKey(), entry.getValue());
+            }
 
             fireOnReadyStateChange(new XMLHttpRequestSnapshot(HEADERS_RECEIVED, status, ""), false);
 

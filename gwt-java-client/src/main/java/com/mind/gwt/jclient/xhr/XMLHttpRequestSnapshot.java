@@ -53,7 +53,7 @@ class XMLHttpRequestSnapshot extends XMLHttpRequest
     @Override
     public String getAllResponseHeaders()
     {
-        throw new UnsupportedOperationException("Method isn't implemented yet");
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -65,7 +65,7 @@ class XMLHttpRequestSnapshot extends XMLHttpRequest
     @Override
     public String getResponseHeader(String header)
     {
-        throw new UnsupportedOperationException("Method isn't implemented yet");
+        throw new UnsupportedOperationException();
     }
 
     @Override
