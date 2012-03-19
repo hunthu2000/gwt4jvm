@@ -32,6 +32,7 @@ public abstract class TestGwtJavaClient extends GwtJavaClient implements Runnabl
         @Override
         public void onFailure(Throwable caught)
         {
+            caught.printStackTrace();
             failure();
         }
     }
