@@ -21,6 +21,7 @@ import java.lang.reflect.Proxy;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.mind.gwt.jclient.metrics.MeasurableAsyncCallback;
 
 public class DeferredBindingFactory
@@ -43,8 +44,8 @@ public class DeferredBindingFactory
         }
         try
         {
-            Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
-            return (T) Proxy.newProxyInstance(asyncServiceClass.getClassLoader(), new Class[] {asyncServiceClass}, new InvocationHandler()
+            final Class<?> asyncServiceClass = (Class<?>) Class.forName(c.getName() + "Async");
+            return (T) Proxy.newProxyInstance(asyncServiceClass.getClassLoader(), new Class[] { asyncServiceClass, ServiceDefTarget.class }, new InvocationHandler()
             {
                 private final T asyncServiceProxy  = (T) Class.forName(c.getName() + "_Proxy").newInstance();
 
@@ -52,7 +53,10 @@ public class DeferredBindingFactory
                 @SuppressWarnings("rawtypes")
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
                 {
-                    args[args.length - 1] = new MeasurableAsyncCallback(method, (AsyncCallback<?>) args[args.length - 1]);
+                    if (method.getDeclaringClass() == asyncServiceClass)
+                    {
+                        args[args.length - 1] = new MeasurableAsyncCallback(method, (AsyncCallback<?>) args[args.length - 1]);
+                    }
                     return method.invoke(asyncServiceProxy, args);
                 }
             });
