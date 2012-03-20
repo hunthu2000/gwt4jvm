@@ -32,9 +32,9 @@
 */
 package com.google.gwt.user.client.rpc.impl;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.Base64Utils;
@@ -46,9 +46,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
 {
     int index;
 
-    JSONArray results;
+    JsonArray results;
 
-    JSONArray stringTable;
+    JsonArray stringTable;
 
     private Serializer serializer;
 
@@ -62,14 +62,14 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            results = new JSONArray(encoded);
+            results = new JsonParser().parse(encoded).getAsJsonArray();
         }
-        catch (JSONException exception)
+        catch (JsonParseException exception)
         {
             new SerializationException(exception);
         }
 
-        index = results.length();
+        index = results.size();
         super.prepareToRead(encoded);
 
         if (getVersion() != SERIALIZATION_STREAM_VERSION)
@@ -89,9 +89,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return results.getInt(--index) != 0;
+            return results.get(--index).getAsInt() != 0;
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -101,9 +101,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return (byte) results.getInt(--index);
+            return (byte) results.get(--index).getAsInt();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -113,9 +113,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return (char) results.getInt(--index);
+            return (char) results.get(--index).getAsInt();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -125,9 +125,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return results.getDouble(--index);
+            return results.get(--index).getAsDouble();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -137,9 +137,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return (float) results.getDouble(--index);
+            return (float) results.get(--index).getAsDouble();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -149,9 +149,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return results.getInt(--index);
+            return results.get(--index).getAsInt();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -161,11 +161,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            String s = results.getString(--index);
-//            return LongLib.longFromBase64(s);
-            return Base64Utils.longFromBase64(s);
+            return Base64Utils.longFromBase64(results.get(--index).getAsString());
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -175,9 +173,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return (short) results.getInt(--index);
+            return (short) results.get(--index).getAsInt();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
@@ -203,21 +201,21 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
-            return index > 0 ? stringTable.getString(index - 1)  : null;
+            return index > 0 ? stringTable.get(index - 1).getAsString() : null;
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new RuntimeException("Serialization exception");
         }
     }
 
-    private JSONArray readJavaScriptObject() throws SerializationException
+    private JsonArray readJavaScriptObject() throws SerializationException
     {
         try
         {
-            return results.getJSONArray(--index);
+            return results.get(--index).getAsJsonArray();
         }
-        catch (JSONException exception)
+        catch (Exception exception)
         {
             throw new SerializationException(exception);
         }
