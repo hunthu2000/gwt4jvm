@@ -16,6 +16,7 @@
 package com.mind.gwt.jclient.test.client;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -53,6 +54,8 @@ public interface Service extends RemoteService
     AggregatedEnumeration getAggregatedEnumeration();
 
     void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration);
+
+    List<?> putAndGetList(List<?> list, String reference);
 
     String getCookies();
 

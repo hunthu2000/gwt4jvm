@@ -87,7 +87,7 @@ class TypeHandlerFactory
     {
         try
         {
-            Class.forName(typeHandlerClass.getName().replaceFirst("_FieldSerializer$", "_CustomFieldSerializer"));
+            Class.forName(typeHandlerClass.getName().replace('_', '$').replaceFirst("\\$FieldSerializer$", "_CustomFieldSerializer"));
             return true;
         }
         catch (ClassNotFoundException exception)

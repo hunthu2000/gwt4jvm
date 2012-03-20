@@ -16,6 +16,7 @@
 package com.mind.gwt.jclient.test.client;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.test.dto.Cookie;
@@ -51,6 +52,8 @@ public interface ServiceAsync
     void getAggregatedEnumeration(AsyncCallback<AggregatedEnumeration> callback);
 
     void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, AsyncCallback<Void> callback);
+
+    void putAndGetList(List<?> list, String reference, AsyncCallback<List<?>> callback);
 
     void getCookies(AsyncCallback<String> callback);
 

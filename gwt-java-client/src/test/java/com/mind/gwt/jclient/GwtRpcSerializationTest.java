@@ -15,6 +15,9 @@
 */
 package com.mind.gwt.jclient;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -248,6 +251,35 @@ public class GwtRpcSerializationTest
                             }
                         });
                     }
+                });
+            }
+        }.execute();
+    }
+
+    @Test
+    public void testEmptyListTransmission() throws InterruptedException
+    {
+        new TestGwtJavaClient()
+        {
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                service.putAndGetList(Collections.emptyList(), "[]", new SimpleAsyncCallback<List<?>>()
+                {
+                    @Override
+                    public void onSuccess(List<?> result)
+                    {
+                        if (result.isEmpty())
+                        {
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
+                    }
+
                 });
             }
         }.execute();

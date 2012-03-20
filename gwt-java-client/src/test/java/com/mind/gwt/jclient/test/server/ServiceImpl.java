@@ -16,6 +16,7 @@
 package com.mind.gwt.jclient.test.server;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -118,7 +119,17 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
         if (!aggregatedEnumeration.equals(AggregatedEnumeration.createClientToServerObject()))
         {
             throw new IllegalArgumentException();
-       }
+        }
+    }
+
+    @Override
+    public List<?> putAndGetList(List<?> list, String reference)
+    {
+        if (!list.toString().equals(reference))
+        {
+            throw new IllegalArgumentException("Got: " + list + ", but expected: " + reference);
+        }
+        return list;
     }
 
     @Override
