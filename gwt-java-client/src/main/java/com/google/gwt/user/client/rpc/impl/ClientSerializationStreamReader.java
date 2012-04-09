@@ -33,7 +33,6 @@
 package com.google.gwt.user.client.rpc.impl;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -64,9 +63,9 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
         {
             results = new JsonParser().parse(encoded).getAsJsonArray();
         }
-        catch (JsonParseException exception)
+        catch (Exception exception)
         {
-            new SerializationException(exception);
+            throw new SerializationException(exception);
         }
 
         index = results.size();
