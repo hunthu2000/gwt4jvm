@@ -16,6 +16,7 @@
 package com.mind.gwt.jclient;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -271,6 +272,41 @@ public class GwtRpcSerializationTest
                     public void onSuccess(List<?> result)
                     {
                         if (result.isEmpty())
+                        {
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
+                    }
+
+                });
+            }
+        }.execute();
+    }
+
+    @Test
+    public void testVeryLongListTransmission() throws InterruptedException
+    {
+        new TestGwtJavaClient()
+        {
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                final LinkedList<String> list = new LinkedList<String>();
+                for (int i = 0; i < 18000; i++)
+                {
+                    list.add(String.valueOf(i));
+                }
+                final String reference = list.toString();
+                service.putAndGetList(list, reference, new SimpleAsyncCallback<List<?>>()
+                {
+                    @Override
+                    public void onSuccess(List<?> result)
+                    {
+                        if (result.toString().equals(reference))
                         {
                             success();
                         }

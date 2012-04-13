@@ -61,6 +61,16 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
     {
         try
         {
+            // Due to a bug in IE6/7, long GWT-RPC response can contain JavaScript,
+            // which we have to remove before parsing response as JSON. Details can
+            // be found in LengthConstrainedArray class.
+            boolean containsInternetExploresWorkaround = encoded.charAt(encoded.lastIndexOf(']', encoded.length() - 3) + 1) == ')' || encoded.charAt(encoded.length() - 1) == ')';
+            if (containsInternetExploresWorkaround)
+            {
+                char[] encodedCharArray = encoded.toCharArray();
+                cleanUpInternetExploresWorkaround(encodedCharArray);
+                encoded = new String(encodedCharArray);
+            }
             results = new JsonParser().parse(encoded).getAsJsonArray();
         }
         catch (Exception exception)
@@ -219,4 +229,39 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
             throw new SerializationException(exception);
         }
     }
+
+    private void cleanUpInternetExploresWorkaround(char[] string)
+    {
+        int lastQuoteIndex = string.length;
+        while (string[--lastQuoteIndex] != '"')
+        {
+            if (string[lastQuoteIndex] == ')') string[lastQuoteIndex] = ' ';
+        }
+        for (int i = 0, quotes = 0; i < lastQuoteIndex; i++)
+        {
+            switch (string[i])
+            {
+                case '"':
+                    quotes++;
+                    break;
+                case ']':
+                    if (quotes % 2 == 0)
+                    {
+                        while (i < lastQuoteIndex && string[i] != '[')
+                        {
+                            string[i++] = ' ';
+                        }
+                        if (string[i] == '[')
+                        {
+                            string[i] = ',';
+                        }
+                    }
+                    break;
+                case '\\':
+                    i++;
+                    break;
+            }
+        }
+    }
+
 }
