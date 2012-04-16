@@ -29,29 +29,17 @@ import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 
 public interface ServiceAsync
 {
-    void getMinPrimitiveWrappers(AsyncCallback<PrimitiveWrappers> callback);
+    void putAndGetPrimitiveWrappers(PrimitiveWrappers primitiveWrappers, String reference, AsyncCallback<PrimitiveWrappers> callback);
 
-    void putMaxPrimitiveWrappers(PrimitiveWrappers primitiveWrappers, AsyncCallback<Void> callback);
+    void putAndGetPrimitives(Primitives primitives, String reference, AsyncCallback<Primitives> callback);
 
-    void getMinPrimitives(AsyncCallback<Primitives> callback);
+    void putAndGetExtendedPrimitives(ExtendedPrimitives extendedPrimitives, String reference, AsyncCallback<ExtendedPrimitives> callback);
 
-    void putMaxPrimitives(Primitives primitives, AsyncCallback<Void> callback);
+    void putAndGetWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass, String reference, AsyncCallback<WithStaticNestedClass> callback);
 
-    void getExtendedPrimitives(AsyncCallback<ExtendedPrimitives> callback);
+    void putAndGetExtendedCollection(ExtendedCollection extendedCollection, String reference, AsyncCallback<ExtendedCollection> callback);
 
-    void putExtendedPrimitives(ExtendedPrimitives extendedPrimitives, AsyncCallback<Void> callback);
-
-    void getWithStaticNestedClass(AsyncCallback<WithStaticNestedClass> callback);
-
-    void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass, AsyncCallback<Void> callback);
-
-    void getExtendedCollection(AsyncCallback<ExtendedCollection> callback);
-
-    void putExtendedCollection(ExtendedCollection extendedCollection, AsyncCallback<Void> callback);
-
-    void getAggregatedEnumeration(AsyncCallback<AggregatedEnumeration> callback);
-
-    void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, AsyncCallback<Void> callback);
+    void putAndGetAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, String reference, AsyncCallback<AggregatedEnumeration> callback);
 
     void putAndGetList(List<?> list, String reference, AsyncCallback<List<?>> callback);
 

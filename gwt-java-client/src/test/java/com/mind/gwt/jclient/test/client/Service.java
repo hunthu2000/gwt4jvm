@@ -31,29 +31,17 @@ import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 @RemoteServiceRelativePath("service")
 public interface Service extends RemoteService
 {
-    PrimitiveWrappers getMinPrimitiveWrappers();
+    PrimitiveWrappers putAndGetPrimitiveWrappers(PrimitiveWrappers primitiveWrappers, String reference);
 
-    void putMaxPrimitiveWrappers(PrimitiveWrappers primitiveWrappers);
+    Primitives putAndGetPrimitives(Primitives primitives, String reference);
 
-    Primitives getMinPrimitives();
+    ExtendedPrimitives putAndGetExtendedPrimitives(ExtendedPrimitives extendedPrimitives, String reference);
 
-    void putMaxPrimitives(Primitives primitives);
+    WithStaticNestedClass putAndGetWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass, String reference);
 
-    ExtendedPrimitives getExtendedPrimitives();
+    ExtendedCollection putAndGetExtendedCollection(ExtendedCollection extendedCollection, String reference);
 
-    void putExtendedPrimitives(ExtendedPrimitives extendedPrimitives);
-
-    WithStaticNestedClass getWithStaticNestedClass();
-
-    void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass);
-
-    ExtendedCollection getExtendedCollection();
-
-    void putExtendedCollection(ExtendedCollection extendedCollection);
-
-    AggregatedEnumeration getAggregatedEnumeration();
-
-    void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration);
+    AggregatedEnumeration putAndGetAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, String reference);
 
     List<?> putAndGetList(List<?> list, String reference);
 

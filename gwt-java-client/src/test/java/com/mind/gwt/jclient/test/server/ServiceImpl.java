@@ -33,93 +33,63 @@ import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
 public class ServiceImpl extends RemoteServiceServlet implements Service
 {
     @Override
-    public PrimitiveWrappers getMinPrimitiveWrappers()
+    public PrimitiveWrappers putAndGetPrimitiveWrappers(PrimitiveWrappers primitiveWrappers, String reference)
     {
-        return PrimitiveWrappers.createMinValue();
-    }
-
-    @Override
-    public void putMaxPrimitiveWrappers(PrimitiveWrappers primitiveWrappers)
-    {
-        if (!PrimitiveWrappers.createMaxValue().equals(primitiveWrappers))
+        if (!primitiveWrappers.toString().equals(reference))
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Got: " + primitiveWrappers + ", but expected: " + reference);
         }
+        return primitiveWrappers;
     }
 
     @Override
-    public Primitives getMinPrimitives()
+    public Primitives putAndGetPrimitives(Primitives primitives, String reference)
     {
-        return Primitives.createMinValue();
-    }
-
-    @Override
-    public void putMaxPrimitives(Primitives primitives)
-    {
-        if (!Primitives.createMaxValue().equals(primitives))
+        if (!primitives.toString().equals(reference))
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Got: " + primitives + ", but expected: " + reference);
         }
+        return primitives;
     }
 
     @Override
-    public ExtendedPrimitives getExtendedPrimitives()
+    public ExtendedPrimitives putAndGetExtendedPrimitives(ExtendedPrimitives extendedPrimitives, String reference)
     {
-        return ExtendedPrimitives.createServerToClientObject();
-    }
-
-    @Override
-    public void putExtendedPrimitives(ExtendedPrimitives extendedPrimitives)
-    {
-        if (!ExtendedPrimitives.createClientToServerObject().equals(extendedPrimitives))
+        if (!extendedPrimitives.toString().equals(reference))
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Got: " + extendedPrimitives + ", but expected: " + reference);
         }
+        return extendedPrimitives;
     }
 
     @Override
-    public WithStaticNestedClass getWithStaticNestedClass()
+    public WithStaticNestedClass putAndGetWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass, String reference)
     {
-        return WithStaticNestedClass.createServerToClientObject();
-    }
-
-    @Override
-    public void putWithStaticNestedClass(WithStaticNestedClass withStaticNestedClass)
-    {
-        if (!withStaticNestedClass.equals(WithStaticNestedClass.createClientToServerObject()))
+        if (!withStaticNestedClass.toString().equals(reference))
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Got: " + withStaticNestedClass + ", but expected: " + reference);
         }
+        return withStaticNestedClass;
     }
 
     @Override
-    public ExtendedCollection getExtendedCollection()
+    public ExtendedCollection putAndGetExtendedCollection(ExtendedCollection extendedCollection, String reference)
     {
-        return ExtendedCollection.createServerToClientObject();
-    }
-
-    @Override
-    public void putExtendedCollection(ExtendedCollection extendedCollection)
-    {
-        if (!extendedCollection.equals(ExtendedCollection.createClientToServerObject()))
+        if (!extendedCollection.toString().equals(reference))
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Got: " + extendedCollection + ", but expected: " + reference);
         }
+        return extendedCollection;
     }
 
     @Override
-    public AggregatedEnumeration getAggregatedEnumeration()
+    public AggregatedEnumeration putAndGetAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration, String reference)
     {
-        return AggregatedEnumeration.createServerToClientObject();
-    }
-
-    @Override
-    public void putAggregatedEnumeration(AggregatedEnumeration aggregatedEnumeration)
-    {
-        if (!aggregatedEnumeration.equals(AggregatedEnumeration.createClientToServerObject()))
+        if (!aggregatedEnumeration.toString().equals(reference))
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Got: " + aggregatedEnumeration + ", but expected: " + reference);
         }
+        return aggregatedEnumeration;
     }
 
     @Override

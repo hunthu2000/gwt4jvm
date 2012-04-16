@@ -63,16 +63,6 @@ public class Primitives implements Serializable
         this.doublePrimitive = primitives.doublePrimitive;
     }
 
-    public static Primitives createMaxValue()
-    {
-        return new Primitives(true, Byte.MAX_VALUE, Character.MAX_VALUE, Short.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE, Float.MAX_VALUE, Double.MAX_VALUE);
-    }
-
-    public static Primitives createMinValue()
-    {
-        return new Primitives(true, Byte.MIN_VALUE, Character.MIN_VALUE, Short.MIN_VALUE, Integer.MIN_VALUE, Long.MIN_VALUE, Float.MIN_VALUE, Double.MIN_VALUE);
-    }
-
     public boolean isBooleanPrimitive()
     {
         return booleanPrimitive;

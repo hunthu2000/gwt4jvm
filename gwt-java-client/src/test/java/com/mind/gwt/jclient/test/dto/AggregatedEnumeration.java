@@ -45,16 +45,6 @@ public class AggregatedEnumeration implements Serializable
 
     private static final long serialVersionUID = 1L;
 
-    public static AggregatedEnumeration createClientToServerObject()
-    {
-        return new AggregatedEnumeration(PrimitiveWrappers.createMaxValue(), SimpleEnumeration.VALUE1, ParameterizedEnumeration.VALUE2);
-    }
-
-    public static AggregatedEnumeration createServerToClientObject()
-    {
-        return new AggregatedEnumeration(PrimitiveWrappers.createMinValue(), SimpleEnumeration.VALUE2, ParameterizedEnumeration.VALUE1);
-    }
-
     private PrimitiveWrappers primitiveWrappers;
 
     private SimpleEnumeration simpleEnumeration;

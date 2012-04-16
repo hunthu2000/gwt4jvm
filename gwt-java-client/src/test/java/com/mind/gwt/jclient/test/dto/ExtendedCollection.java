@@ -16,22 +16,11 @@
 package com.mind.gwt.jclient.test.dto;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 public class ExtendedCollection extends ArrayList<String>
 {
     private static final long serialVersionUID = 1L;
-
-    public static ExtendedCollection createClientToServerObject()
-    {
-        return new ExtendedCollection(Arrays.asList("ClientToServer0", "ClientToServer1", "ClientToServer2"), Integer.MAX_VALUE);
-    }
-
-    public static ExtendedCollection createServerToClientObject()
-    {
-        return new ExtendedCollection(Arrays.asList("ServerToClient0", "ServerToClient1", "ServerToClient2"), Integer.MIN_VALUE);
-    }
 
     private int intPrimitive;
 

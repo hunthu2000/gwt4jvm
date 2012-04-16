@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class PrimitiveWrappers implements Serializable
 {
     private static final long serialVersionUID = 1L;
-
+    
     private Boolean booleanObject;
 
     private Byte byteObject;
@@ -49,16 +49,6 @@ public class PrimitiveWrappers implements Serializable
         this.longObject = longObject;
         this.floatObject = floatObject;
         this.doubleObject = doubleObject;
-    }
-
-    public static PrimitiveWrappers createMaxValue()
-    {
-        return new PrimitiveWrappers(true, Byte.MAX_VALUE, Character.MAX_VALUE, Short.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE, Float.MAX_VALUE, Double.MAX_VALUE);
-    }
-
-    public static PrimitiveWrappers createMinValue()
-    {
-        return new PrimitiveWrappers(true, Byte.MIN_VALUE, Character.MIN_VALUE, Short.MIN_VALUE, Integer.MIN_VALUE, Long.MIN_VALUE, Float.MIN_VALUE, Double.MIN_VALUE);
     }
 
     public Boolean getBooleanObject()

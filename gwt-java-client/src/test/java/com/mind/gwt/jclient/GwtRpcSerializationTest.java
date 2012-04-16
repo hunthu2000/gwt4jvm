@@ -15,6 +15,7 @@
 */
 package com.mind.gwt.jclient;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,9 @@ import com.mind.gwt.jclient.test.dto.Primitives;
 import com.mind.gwt.jclient.test.dto.PrimitiveWrappers;
 import com.mind.gwt.jclient.test.dto.AggregatedEnumeration;
 import com.mind.gwt.jclient.test.dto.WithStaticNestedClass;
+import com.mind.gwt.jclient.test.dto.AggregatedEnumeration.ParameterizedEnumeration;
+import com.mind.gwt.jclient.test.dto.AggregatedEnumeration.SimpleEnumeration;
+import com.mind.gwt.jclient.test.dto.WithStaticNestedClass.StaticNestedClass;
 
 public class GwtRpcSerializationTest
 {
@@ -56,26 +60,20 @@ public class GwtRpcSerializationTest
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putMaxPrimitiveWrappers(PrimitiveWrappers.createMaxValue(), new SimpleAsyncCallback<Void>()
+                final PrimitiveWrappers primitiveWrappers = new PrimitiveWrappers(true, Byte.MIN_VALUE, Character.MIN_VALUE, Short.MIN_VALUE, Integer.MIN_VALUE, Long.MIN_VALUE, Float.MIN_VALUE, Double.MIN_VALUE);
+                service.putAndGetPrimitiveWrappers(primitiveWrappers, primitiveWrappers.toString(), new SimpleAsyncCallback<PrimitiveWrappers>()
                 {
                     @Override
-                    public void onSuccess(Void result)
+                    public void onSuccess(PrimitiveWrappers result)
                     {
-                        service.getMinPrimitiveWrappers(new SimpleAsyncCallback<PrimitiveWrappers>()
+                        if (result.equals(primitiveWrappers))
                         {
-                            @Override
-                            public void onSuccess(PrimitiveWrappers result)
-                            {
-                                if (PrimitiveWrappers.createMinValue().equals(result))
-                                {
-                                    success();
-                                }
-                                else
-                                {
-                                    failure();
-                                }
-                            }
-                        });
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
                     }
                 });
             }
@@ -91,26 +89,20 @@ public class GwtRpcSerializationTest
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putMaxPrimitives(Primitives.createMaxValue(), new SimpleAsyncCallback<Void>()
+                final Primitives primitives = new Primitives(true, Byte.MAX_VALUE, Character.MAX_VALUE, Short.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE, Float.MAX_VALUE, Double.MAX_VALUE);
+                service.putAndGetPrimitives(primitives, primitives.toString(), new SimpleAsyncCallback<Primitives>()
                 {
                     @Override
-                    public void onSuccess(Void result)
+                    public void onSuccess(Primitives result)
                     {
-                        service.getMinPrimitives(new SimpleAsyncCallback<Primitives>()
+                        if (result.equals(primitives))
                         {
-                            @Override
-                            public void onSuccess(Primitives result)
-                            {
-                                if (Primitives.createMinValue().equals(result))
-                                {
-                                    success();
-                                }
-                                else
-                                {
-                                    failure();
-                                }
-                            }
-                        });
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
                     }
                 });
             }
@@ -126,26 +118,21 @@ public class GwtRpcSerializationTest
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putExtendedPrimitives(ExtendedPrimitives.createClientToServerObject(), new SimpleAsyncCallback<Void>()
+                final Primitives primitives = new Primitives(true, Byte.MIN_VALUE, Character.MIN_VALUE, Short.MIN_VALUE, Integer.MIN_VALUE, Long.MIN_VALUE, Float.MIN_VALUE, Double.MIN_VALUE);
+                final ExtendedPrimitives extendedPrimitives = new ExtendedPrimitives(primitives);
+                service.putAndGetExtendedPrimitives(extendedPrimitives, extendedPrimitives.toString(), new SimpleAsyncCallback<ExtendedPrimitives>()
                 {
                     @Override
-                    public void onSuccess(Void result)
+                    public void onSuccess(ExtendedPrimitives result)
                     {
-                        service.getExtendedPrimitives(new SimpleAsyncCallback<ExtendedPrimitives>()
+                        if (result.equals(extendedPrimitives))
                         {
-                            @Override
-                            public void onSuccess(ExtendedPrimitives result)
-                            {
-                                if (ExtendedPrimitives.createServerToClientObject().equals(result))
-                                {
-                                    success();
-                                }
-                                else
-                                {
-                                    failure();
-                                }
-                            }
-                        });
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
                     }
                 });
             }
@@ -161,26 +148,22 @@ public class GwtRpcSerializationTest
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putWithStaticNestedClass(WithStaticNestedClass.createClientToServerObject(), new SimpleAsyncCallback<Void>()
+                final Primitives primitives = new Primitives(true, Byte.MAX_VALUE, Character.MAX_VALUE, Short.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE, Float.MAX_VALUE, Double.MAX_VALUE);
+                final PrimitiveWrappers primitiveWrappers = new PrimitiveWrappers(true, Byte.MIN_VALUE, Character.MIN_VALUE, Short.MIN_VALUE, Integer.MIN_VALUE, Long.MIN_VALUE, Float.MIN_VALUE, Double.MIN_VALUE);
+                final WithStaticNestedClass withStaticNestedClass = new WithStaticNestedClass(new StaticNestedClass(primitiveWrappers), primitives);
+                service.putAndGetWithStaticNestedClass(withStaticNestedClass, withStaticNestedClass.toString(), new SimpleAsyncCallback<WithStaticNestedClass>()
                 {
                     @Override
-                    public void onSuccess(Void result)
+                    public void onSuccess(WithStaticNestedClass result)
                     {
-                        service.getWithStaticNestedClass(new SimpleAsyncCallback<WithStaticNestedClass>()
+                        if (result.equals(withStaticNestedClass))
                         {
-                            @Override
-                            public void onSuccess(WithStaticNestedClass result)
-                            {
-                                if (WithStaticNestedClass.createServerToClientObject().equals(result))
-                                {
-                                    success();
-                                }
-                                else
-                                {
-                                    failure();
-                                }
-                            }
-                        });
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
                     }
                 });
             }
@@ -196,26 +179,20 @@ public class GwtRpcSerializationTest
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putExtendedCollection(ExtendedCollection.createClientToServerObject(), new SimpleAsyncCallback<Void>()
+                final ExtendedCollection extendedCollection = new ExtendedCollection(Arrays.asList("item0", "item1", "item2", "item3", "item4"), Integer.MIN_VALUE);
+                service.putAndGetExtendedCollection(extendedCollection, extendedCollection.toString(), new SimpleAsyncCallback<ExtendedCollection>()
                 {
                     @Override
-                    public void onSuccess(Void result)
+                    public void onSuccess(ExtendedCollection result)
                     {
-                        service.getExtendedCollection(new SimpleAsyncCallback<ExtendedCollection>()
+                        if (result.equals(extendedCollection))
                         {
-                            @Override
-                            public void onSuccess(ExtendedCollection result)
-                            {
-                                if (ExtendedCollection.createServerToClientObject().equals(result))
-                                {
-                                    success();
-                                }
-                                else
-                                {
-                                    failure();
-                                }
-                            }
-                        });
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
                     }
                 });
             }
@@ -231,26 +208,21 @@ public class GwtRpcSerializationTest
             public void run()
             {
                 final ServiceAsync service = GWT.create(Service.class);
-                service.putAggregatedEnumeration(AggregatedEnumeration.createClientToServerObject(), new SimpleAsyncCallback<Void>()
+                final PrimitiveWrappers primitiveWrappers = new PrimitiveWrappers(true, Byte.MAX_VALUE, Character.MAX_VALUE, Short.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE, Float.MAX_VALUE, Double.MAX_VALUE);
+                final AggregatedEnumeration aggregatedEnumeration = new AggregatedEnumeration(primitiveWrappers, SimpleEnumeration.VALUE1, ParameterizedEnumeration.VALUE2);
+                service.putAndGetAggregatedEnumeration(aggregatedEnumeration, aggregatedEnumeration.toString(), new SimpleAsyncCallback<AggregatedEnumeration>()
                 {
                     @Override
-                    public void onSuccess(Void result)
+                    public void onSuccess(AggregatedEnumeration result)
                     {
-                        service.getAggregatedEnumeration(new SimpleAsyncCallback<AggregatedEnumeration>()
+                        if (result.equals(aggregatedEnumeration))
                         {
-                            @Override
-                            public void onSuccess(AggregatedEnumeration result)
-                            {
-                                if (AggregatedEnumeration.createServerToClientObject().equals(result))
-                                {
-                                    success();
-                                }
-                                else
-                                {
-                                    failure();
-                                }
-                            }
-                        });
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
                     }
                 });
             }

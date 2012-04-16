@@ -21,16 +21,6 @@ public class WithStaticNestedClass implements Serializable
 {
     public static final long serialVersionUID = 1L;
 
-    public static WithStaticNestedClass createClientToServerObject()
-    {
-        return new WithStaticNestedClass(new StaticNestedClass(PrimitiveWrappers.createMaxValue()), Primitives.createMinValue());
-    }
-
-    public static WithStaticNestedClass createServerToClientObject()
-    {
-        return new WithStaticNestedClass(new StaticNestedClass(PrimitiveWrappers.createMinValue()), Primitives.createMaxValue());
-    }
-
     public static class StaticNestedClass implements Serializable
     {
         public static final long serialVersionUID = 1L;
@@ -100,9 +90,10 @@ public class WithStaticNestedClass implements Serializable
 
     private Primitives primitives;
 
+    @SuppressWarnings("unused")
     private WithStaticNestedClass() {}
     
-    private WithStaticNestedClass(StaticNestedClass staticNestedClass, Primitives primitives)
+    public WithStaticNestedClass(StaticNestedClass staticNestedClass, Primitives primitives)
     {
         this.staticNestedClass = staticNestedClass;
         this.primitives = primitives;
