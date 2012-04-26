@@ -293,4 +293,39 @@ public class GwtRpcSerializationTest
         }.execute();
     }
 
+    @Test
+    public void testArrayTransmission() throws InterruptedException
+    {
+        new TestGwtJavaClient()
+        {
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                String[] array = new String[10];
+                for (int i = 0; i < array.length; i++)
+                {
+                    array[i] = String.valueOf(i);
+                }
+                final String reference = Arrays.toString(array);
+                service.putAndGetArray(array, reference, new SimpleAsyncCallback<String[]>()
+                {
+                    @Override
+                    public void onSuccess(String[] result)
+                    {
+                        if (Arrays.toString(result).equals(reference))
+                        {
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
+                    }
+
+                });
+            }
+        }.execute();
+    }
+
 }

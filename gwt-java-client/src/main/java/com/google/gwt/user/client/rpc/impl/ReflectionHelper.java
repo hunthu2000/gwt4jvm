@@ -60,12 +60,12 @@ public class ReflectionHelper
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<T> classToInstantiate) throws Exception
     {
-        if (TypeHandler.class.isAssignableFrom(classToInstantiate))
+        String type = classToInstantiate.getName().replaceFirst("_FieldSerializer$", "").replace('_', '$').replaceFirst("^com.google.gwt.user.client.rpc.core.java", "java");
+        try
         {
-            String type = classToInstantiate.getName().replaceFirst("_FieldSerializer$", "").replace('_', '$').replaceFirst("^com.google.gwt.user.client.rpc.core.java", "java");
             return (T) TypeHandlerFactory.getTypeHandler(Class.forName(type));
         }
-        else
+        catch (ClassNotFoundException exception)
         {
             Constructor<T> constructor = classToInstantiate.getDeclaredConstructor();
             constructor.setAccessible(true);

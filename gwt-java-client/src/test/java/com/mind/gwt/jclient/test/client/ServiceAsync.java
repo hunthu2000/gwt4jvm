@@ -43,6 +43,8 @@ public interface ServiceAsync
 
     void putAndGetList(List<?> list, String reference, AsyncCallback<List<?>> callback);
 
+    void putAndGetArray(String[] array, String reference, AsyncCallback<String[]> callback);
+
     void getCookies(AsyncCallback<String> callback);
 
     void setCookies(LinkedList<Cookie> cookies, AsyncCallback<Void> callback);

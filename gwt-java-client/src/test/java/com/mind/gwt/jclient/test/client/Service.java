@@ -45,6 +45,8 @@ public interface Service extends RemoteService
 
     List<?> putAndGetList(List<?> list, String reference);
 
+    String[] putAndGetArray(String[] array, String reference);
+
     String getCookies();
 
     void setCookies(LinkedList<Cookie> cookies);

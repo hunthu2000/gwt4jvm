@@ -15,6 +15,7 @@
 */
 package com.mind.gwt.jclient.test.server;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +101,17 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
             throw new IllegalArgumentException("Got: " + list + ", but expected: " + reference);
         }
         return list;
+    }
+
+    @Override
+    public String[] putAndGetArray(String[] array, String reference)
+    {
+        String arrayAsString = Arrays.toString(array); 
+        if (!arrayAsString.equals(reference))
+        {
+            throw new IllegalArgumentException("Got: " + arrayAsString + ", but expected: " + reference);
+        }
+        return array;
     }
 
     @Override
