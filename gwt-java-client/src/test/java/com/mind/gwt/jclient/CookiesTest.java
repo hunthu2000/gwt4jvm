@@ -27,7 +27,7 @@ import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
 import com.mind.gwt.jclient.test.dto.Cookie;
 
-// TODO Moved to com.google.gwt.user.client package, but that would lead to "ignored 1 unit with compilation errors in first pass"...
+// TODO It should be moved to com.google.gwt.user.client package, but that would lead to "ignored 1 unit with compilation errors in first pass"...
 public class CookiesTest
 {
     @BeforeClass

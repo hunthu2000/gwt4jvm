@@ -30,7 +30,6 @@ public class GwtLoadTest
         @Override
         public void onFinish(GwtJavaClient client)
         {
-            GwtLoadTest.this.onFinish(client);
             GwtLoadTest.this.onClientFinished(client);
             if (isTimeExpired())
             {
@@ -91,37 +90,6 @@ public class GwtLoadTest
     }
 
     /**
-     * @deprecated Use {@link #GwtLoadTest(Class)} and {@link #start(int, long, long, TimeUnit)} instead.
-     * 
-     * Constructs a new <code>GwtLoadTest</code> that will execute concurrently up to specified number of the specified
-     * implementation of {@link GwtJavaClient}. The maximum load will be reached within specified ramp up time and will
-     * be lasting specified time. All times are in specified time units.
-     * 
-     * <p><b>Use with an implementation of {@link GwtJavaClient} that overrides {@link GwtJavaClient#getModuleBaseURL()}
-     * only! Otherwise you will end up with {@link NullPointerException}!</b></p>
-     * 
-     * @param clientClass - an implementation of {@link GwtJavaClient};
-     * @param maxConcurrentClients - maximum number of concurrently executed instances of <code>clientClasses</code>;  
-     * @param rampUpTime - ramp up time;
-     * @param testDuration - test duration;
-     * @param timeUnit - what unit <code>rampUpTime</code> and <code>testDuration</code> should interpreted at. 
-    */
-    @Deprecated
-    public GwtLoadTest(Class<? extends GwtJavaClient> clientClass, int maxConcurrentClients, int rampUpTime, int testDuration, TimeUnit timeUnit)
-    {
-        this(clientClass);
-        this.maxConcurrentClients = maxConcurrentClients;
-        this.rampUpTime = timeUnit.toMillis(rampUpTime);
-        this.testDuration = timeUnit.toMillis(testDuration);
-    }
-
-    /**
-     * @deprecated Use {@link #onClientFinished(GwtJavaClient)} instead.
-    */
-    @Deprecated
-    public void onFinish(GwtJavaClient client) {}
-
-    /**
      * Override this method to be notified when next <tt>GwtJavaClient</tt> is about to {@link GwtJavaClient#start()
      * start} running.
      * 
@@ -140,15 +108,6 @@ public class GwtLoadTest
     public long getConcurrentClients()
     {
         return concurrentClients.get();
-    }
-
-    /**
-     * @deprecated. Use {@link #start(int, int, int, TimeUnit)} instead.
-    */
-    @Deprecated
-    public void start() throws InstantiationException, IllegalAccessException, InterruptedException
-    {
-        start(maxConcurrentClients, rampUpTime, testDuration, TimeUnit.MILLISECONDS);
     }
 
     /**

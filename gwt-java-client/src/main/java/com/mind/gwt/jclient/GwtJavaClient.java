@@ -61,16 +61,6 @@ public abstract class GwtJavaClient implements Runnable
     private final String moduleBaseURL;
     private final DeferredBindingFactory deferredBindingFactory;
 
-    /**
-     * @deprecated Use {@link #GwtJavaClient(String)} instead.  
-    */
-    @Deprecated
-    public GwtJavaClient()
-    {
-        moduleBaseURL = null;
-        deferredBindingFactory = DeferredBindingFactory.getDeferredBindingFactory();
-    }
-
     public GwtJavaClient(String moduleBaseURL)
     {
         this(moduleBaseURL, DeferredBindingFactory.getDeferredBindingFactory());
@@ -169,20 +159,15 @@ public abstract class GwtJavaClient implements Runnable
         return (Collection<T>) (metricsMap.containsKey(type) ? Collections.unmodifiableCollection(metricsMap.get(type)) : Collections.emptyList()); 
     }
 
-    // TODO This method should became final...
+    // TODO This method should become final...
     public DeferredBindingFactory getDeferredBindingFactory()
     {
         return deferredBindingFactory;
     }
 
-    // TODO This method should became final...
+    // TODO This method should become final...
     public String getModuleBaseURL()
     {
-        // TODO Keep this check till the default constructor isn't disappeared.
-        if (moduleBaseURL == null)
-        {
-            throw new IllegalStateException("Module base URL should have been specifed through constructor's argument!");
-        }
         return moduleBaseURL;
     }
 
