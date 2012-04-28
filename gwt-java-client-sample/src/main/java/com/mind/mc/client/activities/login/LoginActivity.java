@@ -29,7 +29,7 @@ import com.mind.mc.client.places.MovieChartPlace;
 
 public class LoginActivity extends AbstractActivity implements Listener
 {
-    private final LoginView view = GWT.create(LoginViewImpl.class); 
+    private final LoginView view = GWT.create(LoginView.class); 
 
     private final ServiceAsync service = GWT.create(Service.class);
 

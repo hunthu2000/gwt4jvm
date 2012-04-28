@@ -9,7 +9,19 @@
 
     <set-property name="user.agent" value="safari"/>
 
-    <source path="dto"/>
     <source path="client"/>
+    <source path="dto"/>
+
+    <replace-with class="com.mind.mc.client.LayoutImpl">
+        <when-type-is class="com.mind.mc.client.Layout"/>
+    </replace-with>
+
+    <replace-with class="com.mind.mc.client.activities.mc.MovieChartViewImpl">
+        <when-type-is class="com.mind.mc.client.activities.mc.MovieChartView"/>
+    </replace-with>
+
+    <replace-with class="com.mind.mc.client.activities.login.LoginViewImpl">
+        <when-type-is class="com.mind.mc.client.activities.login.LoginView"/>
+    </replace-with>
 
 </module>

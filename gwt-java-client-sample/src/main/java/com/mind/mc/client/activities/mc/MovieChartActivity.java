@@ -15,19 +15,66 @@
 */
 package com.mind.mc.client.activities.mc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.mind.mc.client.Service;
+import com.mind.mc.client.ServiceAsync;
+import com.mind.mc.client.activities.mc.MovieChartView.Listener;
+import com.mind.mc.dto.MovieDTO;
 
-public class MovieChartActivity extends AbstractActivity
+public class MovieChartActivity extends AbstractActivity implements Listener
 {
-    public final MovieChartView view = GWT.create(MovieChartViewImpl.class); 
+    public final MovieChartView view = GWT.create(MovieChartView.class); 
+
+    private final ServiceAsync service = GWT.create(Service.class);
+
+    private List<MovieDTO> movies;
 
     @Override
     public void start(AcceptsOneWidget display, EventBus eventBus)
     {
         view.setDisplay(display);
+        view.setListener(this);
+        service.getMovieList(new AsyncCallback<ArrayList<MovieDTO>>()
+        {
+            @Override
+            public void onSuccess(ArrayList<MovieDTO> movies)
+            {
+                MovieChartActivity.this.movies = movies;
+                view.setMovies(movies);
+            }
+
+            @Override
+            public void onFailure(Throwable caught)
+            {
+                Window.alert("Movie list can't be obtained!");
+            }
+
+        });
+    }
+
+    @Override
+    public void onMovieRate(int index, byte rate)
+    {
+        service.rateMovie(movies.get(index).getId(), rate, new AsyncCallback<Void>()
+        {
+            @Override
+            public void onSuccess(Void result) {}
+
+            @Override
+            public void onFailure(Throwable caught)
+            {
+                Window.alert("Movie can't be rated!");
+            }
+
+        });
     }
 
 }

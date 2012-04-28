@@ -41,7 +41,7 @@ public class MovieChartEntryPoint implements EntryPoint
 
     public void onModuleLoad()
     {
-        Layout layout = GWT.create(LayoutImpl.class);
+        Layout layout = GWT.create(Layout.class);
         layout.attach();
         activityManager.setDisplay(layout.getDisplay());
         placeHistoryHandler.register(placeController, eventBus, new LoginPlace());

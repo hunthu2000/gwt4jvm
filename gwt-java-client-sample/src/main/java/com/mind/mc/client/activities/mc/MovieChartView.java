@@ -15,10 +15,22 @@
 */
 package com.mind.mc.client.activities.mc;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.mind.mc.dto.MovieDTO;
 
 public interface MovieChartView
 {
     void setDisplay(AcceptsOneWidget display);
+
+    void setListener(Listener listener);
+
+    void setMovies(List<MovieDTO> movies);
+
+    public interface Listener
+    {
+        void onMovieRate(int index, byte rate);
+    }
 
 }

@@ -15,11 +15,14 @@
 */
 package com.mind.mc.client.activities.mc;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.mind.mc.dto.MovieDTO;
 
 public class MovieChartViewImpl extends Composite implements MovieChartView
 {
@@ -36,6 +39,18 @@ public class MovieChartViewImpl extends Composite implements MovieChartView
     public void setDisplay(AcceptsOneWidget display)
     {
         display.setWidget(this);
+    }
+
+    @Override
+    public void setListener(Listener listener)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void setMovies(List<MovieDTO> movies)
+    {
+        // TODO Auto-generated method stub
     }
 
 }
