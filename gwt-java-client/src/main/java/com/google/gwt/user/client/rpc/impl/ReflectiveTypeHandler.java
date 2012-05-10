@@ -42,9 +42,9 @@ class ReflectiveTypeHandler implements InvocationHandler, TypeHandler
     private final Class<?> serializableClass;
     private final Constructor<?> constructor;
 
-    public ReflectiveTypeHandler(Class<?> serializableClass) throws SecurityException, NoSuchMethodException
+    public ReflectiveTypeHandler(Class<?> serializableClass) throws SecurityException, NoSuchMethodException, NoSuchFieldException
     {
-        for (Field field : serializableClass.getDeclaredFields())
+        for (Field field : getPotentiallySerializableFields(serializableClass))
         {
             field.setAccessible(true);
             int fieldModifiers = field.getModifiers();
@@ -65,6 +65,11 @@ class ReflectiveTypeHandler implements InvocationHandler, TypeHandler
         this.serializableClass = serializableClass;
         constructor = serializableClass.getDeclaredConstructor();
         constructor.setAccessible(true);
+    }
+
+    private Field[] getPotentiallySerializableFields(Class<?> serializableClass) throws SecurityException, NoSuchFieldException
+    {
+        return serializableClass == Throwable.class ? new Field[]{serializableClass.getDeclaredField("detailMessage")} : serializableClass.getDeclaredFields();
     }
 
     @Override

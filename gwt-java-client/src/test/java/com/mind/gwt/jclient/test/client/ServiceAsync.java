@@ -45,6 +45,8 @@ public interface ServiceAsync
 
     void putAndGetArray(String[] array, String reference, AsyncCallback<String[]> callback);
 
+    void throwCheckedException(String message, AsyncCallback<Void> callback);
+
     void getCookies(AsyncCallback<String> callback);
 
     void setCookies(LinkedList<Cookie> cookies, AsyncCallback<Void> callback);

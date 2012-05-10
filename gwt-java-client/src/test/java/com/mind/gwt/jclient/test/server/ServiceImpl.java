@@ -115,6 +115,12 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
     }
 
     @Override
+    public void throwCheckedException(String message) throws Exception
+    {
+        throw new Exception(message);
+    }
+
+    @Override
     public String getCookies()
     {
         return getThreadLocalRequest().getHeader("Cookie");

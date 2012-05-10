@@ -55,6 +55,17 @@
         <plugins>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <testExcludes>
+                        <testExclude>**/AnnotationTypeMismatchException_FieldSerializer.java</testExclude>
+                        <testExclude>**/AnnotationFormatError_FieldSerializer.java</testExclude>
+                    </testExcludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>

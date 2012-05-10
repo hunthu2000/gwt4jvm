@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.test.client.Service;
 import com.mind.gwt.jclient.test.client.ServiceAsync;
 import com.mind.gwt.jclient.test.dto.ExtendedCollection;
@@ -314,6 +315,42 @@ public class GwtRpcSerializationTest
                     public void onSuccess(String[] result)
                     {
                         if (Arrays.toString(result).equals(reference))
+                        {
+                            success();
+                        }
+                        else
+                        {
+                            failure();
+                        }
+                    }
+
+                });
+            }
+        }.execute();
+    }
+
+    @Test
+    public void testExceptionTransmission() throws InterruptedException
+    {
+        new TestGwtJavaClient()
+        {
+            @Override
+            public void run()
+            {
+                final ServiceAsync service = GWT.create(Service.class);
+                final String message = "Test Exception Message";
+                service.throwCheckedException(message, new AsyncCallback<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void result)
+                    {
+                        failure();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught)
+                    {
+                        if (caught instanceof Exception && message.equals(caught.getMessage()))
                         {
                             success();
                         }
