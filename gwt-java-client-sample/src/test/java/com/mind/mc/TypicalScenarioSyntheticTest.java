@@ -31,14 +31,14 @@ import com.mind.mc.client.Service;
 import com.mind.mc.client.ServiceAsync;
 import com.mind.mc.dto.MovieDTO;
 
-public class TypicalScenarioTest extends GwtJavaClient
+public class TypicalScenarioSyntheticTest extends GwtJavaClient
 {
     private static final String MODULE_BASE_URL = System.getProperty("moduleBaseURL", "http://localhost:8080/mc/");
     private static final int CONCURRENT_USERS = Integer.getInteger("concurrentUsers", 100);
     private static final int RAMP_UP_SECONDS = Integer.getInteger("rampUpSeconds", 10);
     private static final int TEST_DURATION_SECONDS = Integer.getInteger("testDurationSeconds", 30);
 
-    public TypicalScenarioTest()
+    public TypicalScenarioSyntheticTest()
     {
         super(MODULE_BASE_URL);
     }
@@ -113,7 +113,7 @@ public class TypicalScenarioTest extends GwtJavaClient
                 {
                     failure.incrementAndGet();
                 }
-                System.out.println(TypicalScenarioTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
+                System.out.println(TypicalScenarioSyntheticTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
             }
 
         }.start(CONCURRENT_USERS, RAMP_UP_SECONDS, TEST_DURATION_SECONDS, TimeUnit.SECONDS);
