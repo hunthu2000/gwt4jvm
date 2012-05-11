@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mind.gwt</groupId>
+        <groupId>com.mind.gwt-java-client</groupId>
         <artifactId>gwt-java-client-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -25,7 +25,7 @@
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>com.mind.gwt</groupId>
+                    <groupId>com.mind.gwt-java-client</groupId>
                     <artifactId>gwt-java-client-overrides</artifactId>
                     <scope>provided</scope>
                 </dependency>
@@ -111,12 +111,12 @@
             <id>test</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.mind.gwt</groupId>
+                    <groupId>com.mind.gwt-java-client</groupId>
                     <artifactId>gwt-java-client</artifactId>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.mind.gwt</groupId>
+                    <groupId>com.mind.gwt-java-client</groupId>
                     <artifactId>gwt-java-client-sample</artifactId>
                     <classifier>classes</classifier>
                     <scope>test</scope>
