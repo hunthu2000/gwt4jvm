@@ -60,7 +60,11 @@ public class GwtLoadTest
     /**
      * Constructs <tt>GwtLoadTest</tt> that will be {@link #start(int, long, long, TimeUnit) operating on} instances of
      * specified {@link GwtJavaClient} implementation.
+     * 
+     * @deprecated Tests should NOT inherit {@link GwtJavaClient}, they should implement {@link EntryPoint}, whereas you
+     * should use {@link #GwtLoadTest(Class, String)} to run them.
     */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public GwtLoadTest(Class<? extends GwtJavaClient> clientClass)
     {
