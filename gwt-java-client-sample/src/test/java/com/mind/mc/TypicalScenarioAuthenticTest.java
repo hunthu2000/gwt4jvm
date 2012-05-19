@@ -34,12 +34,7 @@ import com.mind.mc.mocks.MovieChartViewMock;
 
 public class TypicalScenarioAuthenticTest
 {
-    private static final String MODULE_BASE_URL = System.getProperty("moduleBaseURL", "http://localhost:8080/mc/");
-    private static final int CONCURRENT_USERS = Integer.getInteger("concurrentUsers", 100);
-    private static final int RAMP_UP_SECONDS = Integer.getInteger("rampUpSeconds", 10);
-    private static final int TEST_DURATION_SECONDS = Integer.getInteger("testDurationSeconds", 30);
-
-    private static final DeferredBindingFactory DEFERRED_BINDING_FACTORY = new DeferredBindingFactory()
+    private static final DeferredBindingFactory deferredBindingFactory = new DeferredBindingFactory()
     {
         @Override
         @SuppressWarnings("unchecked")
@@ -66,7 +61,7 @@ public class TypicalScenarioAuthenticTest
     {
         final AtomicLong succeed = new AtomicLong();
         final AtomicLong failure = new AtomicLong();
-        new GwtLoadTest(MovieChartEntryPoint.class, MODULE_BASE_URL, DEFERRED_BINDING_FACTORY)
+        new GwtLoadTest(MovieChartEntryPoint.class, System.getProperty("moduleBaseURL", "http://localhost:8080/mc/"), deferredBindingFactory)
         {
             @Override
             public void onClientFinished(GwtJavaClient client)
@@ -82,7 +77,7 @@ public class TypicalScenarioAuthenticTest
                 System.out.println(TypicalScenarioAuthenticTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
             }
 
-        }.start(CONCURRENT_USERS, RAMP_UP_SECONDS, TEST_DURATION_SECONDS, TimeUnit.SECONDS);
+        }.start(Integer.getInteger("concurrentUsers", 100), Integer.getInteger("rampUpSeconds", 10), Integer.getInteger("testDurationSeconds", 30), TimeUnit.SECONDS);
         Assert.assertTrue(true);
     }
 

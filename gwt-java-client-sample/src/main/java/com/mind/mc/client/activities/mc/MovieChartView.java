@@ -28,9 +28,13 @@ public interface MovieChartView
 
     void setMovies(List<MovieDTO> movies);
 
+    void setMovieRating(int movieIndex, float rating);
+
     public interface Listener
     {
         void onMovieRate(int index, byte rate);
+
+        void onLogout();
     }
 
 }

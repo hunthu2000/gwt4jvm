@@ -26,7 +26,7 @@ public interface ServiceAsync
 
     void getMovieList(AsyncCallback<ArrayList<MovieDTO>> callback);
 
-    void rateMovie(long movieId, byte rate, AsyncCallback<Void> callback);
+    void rateMovie(long movieId, byte rate, AsyncCallback<Float> callback);
 
     void logout(AsyncCallback<Void> callback);
 

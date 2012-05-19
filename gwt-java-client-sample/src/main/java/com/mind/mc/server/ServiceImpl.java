@@ -40,9 +40,9 @@ public class ServiceImpl extends RemoteServiceServlet implements Service
     }
 
     @Override
-    public void rateMovie(long movieId, byte rate)
+    public Float rateMovie(long movieId, byte rate)
     {
-        // TODO Auto-generated method stub
+        return (float) (Math.random() * 10);
     }
 
     @Override

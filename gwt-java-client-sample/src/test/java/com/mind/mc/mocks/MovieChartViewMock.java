@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.mind.gwt.jclient.context.Context;
 import com.mind.mc.client.activities.mc.MovieChartView;
 import com.mind.mc.dto.MovieDTO;
 
@@ -41,22 +40,19 @@ public class MovieChartViewMock implements MovieChartView
     {
         new Timer()
         {
-            private int repeated = 0;
-
             @Override
             public void run()
             {
-                if (repeated++ < 3)
-                {
-                    listener.onMovieRate((int) (Math.random() * movies.size()), (byte) (Math.random() * 10));
-                }
-                else
-                {
-                    Context.getCurrentContext().getClient().success();
-                }
+                listener.onMovieRate((int) (Math.random() * movies.size()), (byte) (Math.random() * 10));
             }
 
         }.scheduleRepeating((int) (100 + Math.random() * 3000));
+    }
+
+    @Override
+    public void setMovieRating(int movieIndex, float rating)
+    {
+        listener.onLogout();
     }
 
 }

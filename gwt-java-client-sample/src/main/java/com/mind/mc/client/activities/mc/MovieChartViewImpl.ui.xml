@@ -4,16 +4,30 @@
     <ui:style>
 
         .view {
-            width:      350px;
-            margin:     100px auto 0;
-            text-align: center;
-            font:       14px sans-serif,arial;
+            position:           relative;
+            padding-top:        100px;
+            font:               14px sans-serif,arial;
+        }
+
+        .message {
+            width:              350px;
+            margin:             0 auto;
+            text-align:         center;
+        }
+
+        .logoutButton {
+            position:           absolute;
+            top:                0;
+            right:              0;
         }
 
     </ui:style>
 
     <g:HTMLPanel styleName="{style.view}">
-        Movie Chart isn't complete web-application and it doesn't have GUI. Its purpose is just to show how to write load tests using GWT Java Client.
+        <div class="{style.message}">
+            Movie Chart isn't complete web-application and it doesn't have GUI. Its purpose is just to show how to write load tests using GWT Java Client.
+        </div>
+        <g:Button styleName="{style.logoutButton}" ui:field="logoutButton">Logout</g:Button>
     </g:HTMLPanel>
 
 </ui:UiBinder>

@@ -5,7 +5,7 @@
 
         .view {
             text-align: center;
-            font:       14px monospace;
+            font:       14px sans-serif,arial;
         }
 
         .centeredInlineBlock {

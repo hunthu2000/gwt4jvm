@@ -28,7 +28,7 @@ public interface Service extends RemoteService
 
     public ArrayList<MovieDTO> getMovieList();
 
-    public void rateMovie(long movieId, byte rate);
+    public Float rateMovie(long movieId, byte rate);
 
     public void logout();
 

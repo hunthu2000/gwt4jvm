@@ -22,29 +22,21 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.mind.gwt.jclient.GwtJavaClient;
 import com.mind.gwt.jclient.GwtLoadTest;
+import com.mind.gwt.jclient.context.Context;
 import com.mind.mc.client.Service;
 import com.mind.mc.client.ServiceAsync;
 import com.mind.mc.dto.MovieDTO;
 
-public class TypicalScenarioSyntheticTest extends GwtJavaClient
+public class TypicalScenarioSyntheticTest implements EntryPoint
 {
-    private static final String MODULE_BASE_URL = System.getProperty("moduleBaseURL", "http://localhost:8080/mc/");
-    private static final int CONCURRENT_USERS = Integer.getInteger("concurrentUsers", 100);
-    private static final int RAMP_UP_SECONDS = Integer.getInteger("rampUpSeconds", 10);
-    private static final int TEST_DURATION_SECONDS = Integer.getInteger("testDurationSeconds", 30);
-
-    public TypicalScenarioSyntheticTest()
-    {
-        super(MODULE_BASE_URL);
-    }
-
     @Override
-    public void run()
+    public void onModuleLoad()
     {
         final ServiceAsync service = GWT.create(Service.class);
         service.login("username", "password", new SimpleAsyncCallback<Void>()
@@ -63,17 +55,17 @@ public class TypicalScenarioSyntheticTest extends GwtJavaClient
                             @Override
                             public void run()
                             {
-                                service.rateMovie(randomMovie.getId(), (byte) (Math.random() * 10), new SimpleAsyncCallback<Void>()
+                                service.rateMovie(randomMovie.getId(), (byte) (Math.random() * 10), new SimpleAsyncCallback<Float>()
                                 {
                                     @Override
-                                    public void onSuccess(Void result)
+                                    public void onSuccess(Float rating)
                                     {
                                         service.logout(new SimpleAsyncCallback<Void>()
                                         {
                                             @Override
                                             public void onSuccess(Void result)
                                             {
-                                                success();
+                                                Context.getCurrentContext().getClient().success();
                                             }
                                         });
                                     }
@@ -91,7 +83,7 @@ public class TypicalScenarioSyntheticTest extends GwtJavaClient
         @Override
         public void onFailure(Throwable caught)
         {
-            failure();
+            Context.getCurrentContext().getClient().failure();
         }
     }
 
@@ -100,7 +92,7 @@ public class TypicalScenarioSyntheticTest extends GwtJavaClient
     {
         final AtomicLong succeed = new AtomicLong();
         final AtomicLong failure = new AtomicLong();
-        new GwtLoadTest(getClass())
+        new GwtLoadTest(getClass(), System.getProperty("moduleBaseURL", "http://localhost:8080/mc/"))
         {
             @Override
             public void onClientFinished(GwtJavaClient client)
@@ -116,7 +108,7 @@ public class TypicalScenarioSyntheticTest extends GwtJavaClient
                 System.out.println(TypicalScenarioSyntheticTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
             }
 
-        }.start(CONCURRENT_USERS, RAMP_UP_SECONDS, TEST_DURATION_SECONDS, TimeUnit.SECONDS);
+        }.start(Integer.getInteger("concurrentUsers", 100), Integer.getInteger("rampUpSeconds", 10), Integer.getInteger("testDurationSeconds", 30), TimeUnit.SECONDS);
         Assert.assertTrue(true);
     }
 

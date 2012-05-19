@@ -55,7 +55,7 @@ public class LoginViewImpl extends Composite implements LoginView
     }
 
     @UiHandler("loginButton")
-    public void onSignInButtonClick(ClickEvent event)
+    public void onLoginButtonClick(ClickEvent event)
     {
         listener.onLogin(username.getValue(), password.getValue());
     }

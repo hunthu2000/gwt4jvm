@@ -18,7 +18,9 @@ package com.mind.mc.client.activities.mc;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -30,6 +32,8 @@ public class MovieChartViewImpl extends Composite implements MovieChartView
 
     private static Ui ui = GWT.create(Ui.class);
     
+    private Listener listener;
+
     public MovieChartViewImpl()
     {
         initWidget(ui.createAndBindUi(this));
@@ -44,13 +48,25 @@ public class MovieChartViewImpl extends Composite implements MovieChartView
     @Override
     public void setListener(Listener listener)
     {
-        // TODO Auto-generated method stub
+        this.listener = listener;
     }
 
     @Override
     public void setMovies(List<MovieDTO> movies)
     {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void setMovieRating(int movieIndex, float rating)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @UiHandler("logoutButton")
+    public void onLogoutButtonClick(ClickEvent event)
+    {
+        listener.onLogout();
     }
 
 }

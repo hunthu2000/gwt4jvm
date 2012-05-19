@@ -21,12 +21,14 @@ import java.util.List;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.mind.mc.client.Service;
 import com.mind.mc.client.ServiceAsync;
 import com.mind.mc.client.activities.mc.MovieChartView.Listener;
+import com.mind.mc.client.places.LoginPlace;
 import com.mind.mc.dto.MovieDTO;
 
 public class MovieChartActivity extends AbstractActivity implements Listener
@@ -35,7 +37,14 @@ public class MovieChartActivity extends AbstractActivity implements Listener
 
     private final ServiceAsync service = GWT.create(Service.class);
 
+    private final PlaceController placeController;
+
     private List<MovieDTO> movies;
+
+    public MovieChartActivity(PlaceController placeController)
+    {
+        this.placeController = placeController;
+    }
 
     @Override
     public void start(AcceptsOneWidget display, EventBus eventBus)
@@ -61,12 +70,15 @@ public class MovieChartActivity extends AbstractActivity implements Listener
     }
 
     @Override
-    public void onMovieRate(int index, byte rate)
+    public void onMovieRate(final int index, byte rate)
     {
-        service.rateMovie(movies.get(index).getId(), rate, new AsyncCallback<Void>()
+        service.rateMovie(movies.get(index).getId(), rate, new AsyncCallback<Float>()
         {
             @Override
-            public void onSuccess(Void result) {}
+            public void onSuccess(Float rating)
+            {
+                view.setMovieRating(index, rating);
+            }
 
             @Override
             public void onFailure(Throwable caught)
@@ -75,6 +87,12 @@ public class MovieChartActivity extends AbstractActivity implements Listener
             }
 
         });
+    }
+
+    @Override
+    public void onLogout()
+    {
+        placeController.goTo(new LoginPlace());
     }
 
 }

@@ -43,6 +43,6 @@ public class MovieChartPlace extends Place implements HasActivity
     @Override
     public Activity getActivity(Place place, PlaceController placeController)
     {
-        return new MovieChartActivity();
+        return new MovieChartActivity(placeController);
     }
 }

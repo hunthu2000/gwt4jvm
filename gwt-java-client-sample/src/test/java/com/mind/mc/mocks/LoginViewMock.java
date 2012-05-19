@@ -17,6 +17,8 @@ package com.mind.mc.mocks;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.mind.gwt.jclient.context.Context;
+import com.mind.gwt.jclient.metrics.GwtRpcMetrics;
 import com.mind.mc.client.activities.login.LoginView;
 
 public class LoginViewMock implements LoginView
@@ -27,15 +29,23 @@ public class LoginViewMock implements LoginView
     @Override
     public void setListener(final LoginView.Listener listener)
     {
-        new Timer()
+        boolean afterLogout = Context.getCurrentContext().getClient().getMetrics(GwtRpcMetrics.class).size() > 0;
+        if (afterLogout)
         {
-            @Override
-            public void run()
+            Context.getCurrentContext().getClient().success();
+        }
+        else
+        {
+            new Timer()
             {
-                listener.onLogin("username", "password");
-            }
+                @Override
+                public void run()
+                {
+                    listener.onLogin("username", "password");
+                }
 
-        }.schedule((int) (100 + Math.random() * 3000));
+            }.schedule((int) (100 + Math.random() * 3000));
+        }
     }
 
 }
