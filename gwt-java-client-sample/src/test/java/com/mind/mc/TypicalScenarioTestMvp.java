@@ -32,7 +32,7 @@ import com.mind.mc.mocks.LayoutMock;
 import com.mind.mc.mocks.LoginViewMock;
 import com.mind.mc.mocks.MovieChartViewMock;
 
-public class TypicalScenarioAuthenticTest
+public class TypicalScenarioTestMvp
 {
     private static final DeferredBindingFactory deferredBindingFactory = new DeferredBindingFactory()
     {
@@ -74,7 +74,7 @@ public class TypicalScenarioAuthenticTest
                 {
                     failure.incrementAndGet();
                 }
-                System.out.println(TypicalScenarioAuthenticTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
+                System.out.println(TypicalScenarioTestMvp.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
             }
 
         }.start(Integer.getInteger("concurrentUsers", 100), Integer.getInteger("rampUpSeconds", 10), Integer.getInteger("testDurationSeconds", 30), TimeUnit.SECONDS);

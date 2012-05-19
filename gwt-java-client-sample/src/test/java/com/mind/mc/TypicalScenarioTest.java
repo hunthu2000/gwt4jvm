@@ -33,7 +33,7 @@ import com.mind.mc.client.Service;
 import com.mind.mc.client.ServiceAsync;
 import com.mind.mc.dto.MovieDTO;
 
-public class TypicalScenarioSyntheticTest implements EntryPoint
+public class TypicalScenarioTest implements EntryPoint
 {
     @Override
     public void onModuleLoad()
@@ -105,7 +105,7 @@ public class TypicalScenarioSyntheticTest implements EntryPoint
                 {
                     failure.incrementAndGet();
                 }
-                System.out.println(TypicalScenarioSyntheticTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
+                System.out.println(TypicalScenarioTest.class.getSimpleName() + ": concurrent users: " + getConcurrentClients() + ", succeed: " + succeed.get() + ", failure: " + failure.get());
             }
 
         }.start(Integer.getInteger("concurrentUsers", 100), Integer.getInteger("rampUpSeconds", 10), Integer.getInteger("testDurationSeconds", 30), TimeUnit.SECONDS);

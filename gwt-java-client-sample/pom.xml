@@ -134,7 +134,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <includes>
-                                <include>**/TypicalScenarioSyntheticTest.java</include>
+                                <include>**/TypicalScenarioTest.java</include>
                             </includes>
                         </configuration>
                     </plugin>
