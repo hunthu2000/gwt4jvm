@@ -1,0 +1,24 @@
+There is a sample that shows how to use GWT Java Client to load test GWT applications. It consists
+of a web application called Movie Chart (simplified GWT-based clone of IMDB Top 250 Movies that was
+conceived to show the list of movies sorted by rating which is formed by votes of registered users)
+and a load test that simulates typical usage scenario: login, get the list of movies, then rate one
+of them and finally logout.
+
+Movie Chart application requires JDK (1.6 or above) and Maven 3. Once they are installed, compile
+the project: 
+
+  mvn package
+
+Then start Movie Chart application (it will available at http://localhost:8080/):
+
+  mvn jetty:run-exploded -Djetty.port=8080
+
+While it is running launch the load test by entering:
+
+  mvn test -P test -DmoduleBaseURL=http://localhost:8080/mc/ \
+                   -DconcurrentUsers=100                     \
+                   -DrampUpSeconds=10                        \
+                   -DtestDurationSeconds=30
+
+And it will start and maintain the load of hundred concurrent users executing scenario described
+above. The load will be ramped up in 10 seconds and will be lasting for half a minute.
