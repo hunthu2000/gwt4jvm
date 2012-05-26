@@ -4,15 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mind.gwt-java-client</groupId>
-        <artifactId>gwt-java-client-parent</artifactId>
+        <groupId>com.mind.gwt4jvm</groupId>
+        <artifactId>gwt4jvm-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gwt-java-client-overrides</artifactId>
+    <artifactId>gwt4jvm-overrides</artifactId>
     <packaging>jar</packaging>
 
-    <name>GWT Java Client - GWT Overrides</name> 
+    <name>gwt4jvm - GWT Overrides</name> 
 
     <dependencies>
         <dependency>

@@ -1,17 +1,16 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mind.gwt-java-client</groupId>
-    <artifactId>gwt-java-client-parent</artifactId>
+    <groupId>com.mind.gwt4jvm</groupId>
+    <artifactId>gwt4jvm-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>GWT Java Client</name>
+    <name>gwt4jvm</name>
 
-    <url>http://code.google.com/p/gwt-java-client/</url>
+    <url>http://code.google.com/p/gwt4jvm/</url>
 
     <licenses>
         <license>
@@ -21,9 +20,9 @@
     </licenses>
 
     <modules>
-        <module>gwt-java-client-overrides</module>
-        <module>gwt-java-client</module>
-        <module>gwt-java-client-sample</module>
+        <module>gwt4jvm-overrides</module>
+        <module>gwt4jvm</module>
+        <module>gwt4jvm-sample</module>
     </modules>
 
     <properties>
@@ -75,18 +74,18 @@
                 <version>8.0.4.v20111024</version>
             </dependency>
             <dependency>
-                <groupId>com.mind.gwt-java-client</groupId>
-                <artifactId>gwt-java-client-overrides</artifactId>
+                <groupId>com.mind.gwt4jvm</groupId>
+                <artifactId>gwt4jvm-overrides</artifactId>
                 <version>${gwtJavaClient.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mind.gwt-java-client</groupId>
-                <artifactId>gwt-java-client</artifactId>
+                <groupId>com.mind.gwt4jvm</groupId>
+                <artifactId>gwt4jvm</artifactId>
                 <version>${gwtJavaClient.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mind.gwt-java-client</groupId>
-                <artifactId>gwt-java-client-sample</artifactId>
+                <groupId>com.mind.gwt4jvm</groupId>
+                <artifactId>gwt4jvm-sample</artifactId>
                 <classifier>classes</classifier>
                 <version>${gwtJavaClient.version}</version>
             </dependency>

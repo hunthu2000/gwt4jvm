@@ -4,21 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mind.gwt-java-client</groupId>
-        <artifactId>gwt-java-client-parent</artifactId>
+        <groupId>com.mind.gwt4jvm</groupId>
+        <artifactId>gwt4jvm-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gwt-java-client</artifactId>
+    <artifactId>gwt4jvm</artifactId>
     <packaging>jar</packaging>
 
-    <name>GWT Java Client - GWT Java Client</name>
+    <name>gwt4jvm - gwt4jvm</name>
 
     <dependencies>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>com.mind.gwt-java-client</groupId>
-            <artifactId>gwt-java-client-overrides</artifactId>
+            <groupId>com.mind.gwt4jvm</groupId>
+            <artifactId>gwt4jvm-overrides</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -128,7 +128,7 @@
                                     <arg value="-draftCompile"/>
                                     <arg value="com.mind.gwt.jclient.test.Test"/>
                                     <classpath>
-                                        <pathelement location="${com.mind.gwt-java-client:gwt-java-client-overrides:jar}"/>
+                                        <pathelement location="${com.mind.gwt4jvm:gwt4jvm-overrides:jar}"/>
                                         <pathelement location="${com.google.gwt:gwt-user:jar}"/>
                                         <pathelement location="${com.google.gwt:gwt-dev:jar}"/>
                                         <pathelement location="${javax.validation:validation-api:jar}"/>

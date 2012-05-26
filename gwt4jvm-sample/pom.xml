@@ -4,15 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mind.gwt-java-client</groupId>
-        <artifactId>gwt-java-client-parent</artifactId>
+        <groupId>com.mind.gwt4jvm</groupId>
+        <artifactId>gwt4jvm-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gwt-java-client-sample</artifactId>
+    <artifactId>gwt4jvm-sample</artifactId>
     <packaging>war</packaging>
 
-    <name>GWT Java Client - Sample</name>
+    <name>gwt4jvm - Sample (Movie Chart Application)</name>
 
     <profiles>
 
@@ -25,8 +25,8 @@
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>com.mind.gwt-java-client</groupId>
-                    <artifactId>gwt-java-client-overrides</artifactId>
+                    <groupId>com.mind.gwt4jvm</groupId>
+                    <artifactId>gwt4jvm-overrides</artifactId>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
@@ -111,13 +111,13 @@
             <id>test</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.mind.gwt-java-client</groupId>
-                    <artifactId>gwt-java-client</artifactId>
+                    <groupId>com.mind.gwt4jvm</groupId>
+                    <artifactId>gwt4jvm</artifactId>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.mind.gwt-java-client</groupId>
-                    <artifactId>gwt-java-client-sample</artifactId>
+                    <groupId>com.mind.gwt4jvm</groupId>
+                    <artifactId>gwt4jvm-sample</artifactId>
                     <classifier>classes</classifier>
                     <scope>test</scope>
                 </dependency>
