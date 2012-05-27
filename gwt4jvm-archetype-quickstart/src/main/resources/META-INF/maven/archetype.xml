@@ -1,0 +1,6 @@
+<archetype>
+    <id>gwt4jvm-archetype-quickstart</id>
+    <testSources>
+        <source>src/test/java/SimpleLoadTest.java</source>
+    </testSources>
+</archetype>
